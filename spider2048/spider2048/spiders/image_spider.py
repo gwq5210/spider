@@ -2,14 +2,11 @@ import scrapy
 import sys
 import os
 import re
-import optparse
-import requests
 import random
 import time
 import json
 import logging
 import parse
-from bs4 import BeautifulSoup
 from spider2048.items import Spider2048Item
 from urllib.parse import urlparse
 
@@ -18,14 +15,21 @@ class ImageSpider(scrapy.Spider):
     spider_name_list = ["美图秀秀"]
     spider_title_list = ["唯美清純"]
     filter_text_list = ["站点公告", "置顶", "赌场"]
-    page_limit_count = 100
-    image_limit_count = 0
     invalid_char_regex = re.compile(r"[\/\\\:\*\?\"\<\>\|]")  # '/ \ : * ? " < > |'
-    request_url = "https://www.hjd2048.com/2048/"
 
-    def start_requests(self):
-        yield scrapy.Request(self.request_url, self.parse)
-
+    def __init__(self, base_url=None, page_limit_count=None, image_limit_count=None, *args, **kwargs):
+        super(ImageSpider, self).__init__(*args, **kwargs)
+        self.start_urls = []
+        if base_url:
+            self.start_urls.append(f"{base_url}")
+        self.page_limit_count = 0
+        self.image_limit_count = 0
+        if page_limit_count:
+            self.page_limit_count = int(page_limit_count)
+        if image_limit_count:
+            self.image_limit_count = int(image_limit_count)
+        self.logger.info("page_limit_count: {}, image_limit_count: {}".format(self.page_limit_count, self.image_limit_count))
+        
     def parse(self, response):
         th_list = response.xpath("//*[@id='cate_1']/tr/th[1]")[1:]
         for th in th_list:
@@ -46,10 +50,11 @@ class ImageSpider(scrapy.Spider):
         page_count = page_limit_count
         if parse_result and parse_result["page_count"]:
             page_count = parse_result["page_count"]
-            if page_limit_count == 0:
+            if page_limit_count < 0:
                 page_limit_count = page_count
             self.logger.info("%s total page count %d, page limit count %d" % (title, page_count, self.page_limit_count))
         else:
+            page_limit_count = 0
             self.logger.warning("%s parse total page count failed, page_str(%s)" % (title, page_str))
         url_pattern = response.url.replace(".html", "-page-%d.html")
         i = 1
@@ -99,15 +104,17 @@ class ImageSpider(scrapy.Spider):
         img_url_list = []
         invalid_url_list = []
         for img in img_list:
-            img_url_list.append(img.attrib["src"])
+            if self.image_limit_count >= 0 and len(img_url_list) >= self.image_limit_count:
+                break
             parse_result = urlparse(img.attrib["src"])
             if not parse_result.netloc:
                 invalid_url_list.append(img.attrib["src"])
-            if self.image_limit_count > 0 and len(img_url_list) >= self.image_limit_count:
-                break
+            else:
+                img_url_list.append(img.attrib["src"])
         items["title"] = title
         items["image_title"] = img_title
         items["thread_url"] = response.url
+        items["thread_id"] = response.url
         items["file_urls"] = img_url_list
         if not img_title:
             self.logger.waring("parse %s (%s) title failed" % (title, response.url))

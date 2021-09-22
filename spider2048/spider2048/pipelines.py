@@ -6,10 +6,13 @@
 
 # useful for handling different item types with a single interface
 import os
+import logging
 from itemadapter import ItemAdapter
 from urllib.parse import urlparse
 from scrapy.pipelines.files import FilesPipeline
 from spider2048.settings import FILES_STORE
+
+logger = logging.getLogger(__name__)
 
 class Spider2048FilesPipeline(FilesPipeline):
     def file_path(self, request, response=None, info=None, *, item=None):

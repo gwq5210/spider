@@ -10,6 +10,7 @@ class Spider2048Item(scrapy.Item):
     # define the fields for your item here like:
     title = scrapy.Field()
     image_title = scrapy.Field()
+    thread_id = scrapy.Field()
     thread_url = scrapy.Field()
     file_urls = scrapy.Field()
     files = scrapy.Field()

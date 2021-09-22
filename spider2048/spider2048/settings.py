@@ -13,7 +13,7 @@ SPIDER_MODULES = ['spider2048.spiders']
 NEWSPIDER_MODULE = 'spider2048.spiders'
 FILES_STORE = 'F:\\Download\\images'
 LOG_FILE = 'spider2048.log'
-LOG_LEVEL = 'DEBUG'
+LOG_LEVEL = 'INFO'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'spider2048 (+http://www.yourdomain.com)'

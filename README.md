@@ -1,177 +1,104 @@
 <!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
+
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
-
-
 <!-- PROJECT LOGO -->
 <br />
+
 <p align="center">
-  <a href="https://github.com/gwq5210/spider">
-    <img src="images/spider.jpg" alt="Logo" width="160" height="100">
+  <a href="https://github.com/gwq5210/spider/">
+    <img src="images/logo.jpg" alt="Logo" width="160" height="100">
   </a>
 
-  <h3 align="center">spider</h3>
-
+  <h3 align="center">爬虫</h3>
   <p align="center">
-    spider repo
+    自己写的一些爬虫
     <br />
-    <a href="https://github.com/gwq5210/spider"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/gwq5210/spider"><strong>探索本项目的文档 »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/gwq5210/spider">View Demo</a>
+    <a href="https://github.com/gwq5210/spider">查看Demo</a>
     ·
-    <a href="https://github.com/gwq5210/spider/issues">Report Bug</a>
+    <a href="https://github.com/gwq5210/spider/issues">报告Bug</a>
     ·
-    <a href="https://github.com/gwq5210/spider/issues">Request Feature</a>
+    <a href="https://github.com/gwq5210/spider/issues">提出新特性</a>
   </p>
+
 </p>
-
-
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">
-  <summary><h2 style="display: inline-block">Table of Contents</h2></summary>
+  <summary><h2 style="display: inline-block">目录</h2></summary>
   <ol>
     <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
+      <a href="#关于项目">关于项目</a>
     </li>
     <li>
-      <a href="#getting-started">Getting Started</a>
+      <a href="#上手指南">上手指南</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#依赖">依赖</a></li>
+        <li><a href="#运行步骤">运行步骤</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgements">Acknowledgements</a></li>
+    <li><a href="#版权说明">版权说明</a></li>
+    <li><a href="#联系方式">联系方式</a></li>
+    <li><a href="#鸣谢">鸣谢</a></li>
   </ol>
 </details>
 
-
-
-<!-- ABOUT THE PROJECT -->
-## About The Project
+# 关于项目
 
 爬虫的仓库集合
-* [spider2048](spider2048)
 
-### Built With
+* [spider2048](spider2048)——爬取图片，并将数据存储在[Elasticsearch][Elasticsearch]中
 
-* [Python](https://www.python.org/)
+# 上手指南
+
+## 依赖
+
+* [Python3](https://www.python.org/)
 * [Scrapy](https://scrapy.org/)
+* [Parse](https://pypi.org/project/parse/)
+* [Elasticsearch][Elasticsearch]
 
+## **运行步骤**
 
-<!-- GETTING STARTED -->
-## Getting Started
+1. 安装依赖
 
-To get a local copy up and running follow these simple steps.
+```sh
+pip install scrapy parse
+```
 
-### Prerequisites
+2. 运行爬虫
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+```sh
+git clone https://github.com/gwq5210/spider.git
+cd spider/spider2048
+scrapy crawl image_spider
+```
 
-### Installation
+# 版权说明
 
-1. Clone the repo
-   ```sh
-   git clone https://github.com/gwq5210/spider.git
-   ```
-2. Install NPM packages
-   ```sh
-   npm install
-   ```
+该项目签署了MIT 授权许可，详情请参阅 [LICENSE.txt](https://github.com/gwq5210/spider/blob/master/LICENSE.txt)
 
+# 联系方式
 
+gwq5210@qq.com
 
-<!-- USAGE EXAMPLES -->
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-
-
-<!-- ROADMAP -->
-## Roadmap
-
-See the [open issues](https://github.com/gwq5210/spider/issues) for a list of proposed features (and known issues).
-
-
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-
-
-<!-- LICENSE -->
-## License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
-
-
-<!-- CONTACT -->
-## Contact
-
-gwq5210  - gwq5210@qq.com
-
-Project Link: [https://github.com/gwq5210/spider](https://github.com/gwq5210/spider)
-
-
-
-<!-- ACKNOWLEDGEMENTS -->
-## Acknowledgements
-
-* []()
-* []()
-* []()
-
-
-
-
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/gwq5210/repo.svg?style=for-the-badge
+<!-- links -->
+[your-project-path]:gwq5210/spider
+[contributors-shield]: https://img.shields.io/github/contributors/gwq5210/spider.svg?style=flat-square
 [contributors-url]: https://github.com/gwq5210/spider/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/gwq5210/repo.svg?style=for-the-badge
+[forks-shield]: https://img.shields.io/github/forks/gwq5210/spider.svg?style=flat-square
 [forks-url]: https://github.com/gwq5210/spider/network/members
-[stars-shield]: https://img.shields.io/github/stars/gwq5210/repo.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/gwq5210/spider.svg?style=flat-square
 [stars-url]: https://github.com/gwq5210/spider/stargazers
-[issues-shield]: https://img.shields.io/github/issues/gwq5210/repo.svg?style=for-the-badge
-[issues-url]: https://github.com/gwq5210/spider/issues
-[license-shield]: https://img.shields.io/github/license/gwq5210/repo.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/gwq5210/spider.svg?style=flat-square
+[issues-url]: https://img.shields.io/github/issues/gwq5210/spider.svg
+[license-shield]: https://img.shields.io/github/license/gwq5210/spider.svg?style=flat-square
 [license-url]: https://github.com/gwq5210/spider/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/gwq5210
+[Elasticsearch]: https://www.elastic.co/cn/
