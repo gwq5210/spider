@@ -7,10 +7,16 @@ import scrapy
 
 
 class Spider2048Item(scrapy.Item):
-    # define the fields for your item here like:
-    title = scrapy.Field()
-    image_title = scrapy.Field()
+    id = scrapy.Field()
+    top_title = scrapy.Field()
+    thread_title = scrapy.Field()
     thread_id = scrapy.Field()
-    thread_url = scrapy.Field()
+    thread_time = scrapy.Field()
     file_urls = scrapy.Field()
+    results = scrapy.Field()
     files = scrapy.Field()
+    succeeded_count = scrapy.Field()
+    failed_count = scrapy.Field()
+    total_count = scrapy.Field()
+    first_crawl_time = scrapy.Field()
+    crawl_time = scrapy.Field()

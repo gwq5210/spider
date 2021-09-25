@@ -1,4 +1,4 @@
-# Scrapy settings for spider2048 project
+# Scrapy settings for spider_macwk project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,29 +7,26 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'spider2048'
+BOT_NAME = 'spider_macwk'
 
-SPIDER_MODULES = ['spider2048.spiders']
-NEWSPIDER_MODULE = 'spider2048.spiders'
-FILES_STORE = 'F:\\Download\\images'
-LOG_FILE = 'F:\\spider\\spider2048\\spider2048.log'
+SPIDER_MODULES = ['spider_macwk.spiders']
+NEWSPIDER_MODULE = 'spider_macwk.spiders'
+LOG_FILE = 'F:\\spider\\spider_macwk\\logs\soft_spider.log'
 LOG_LEVEL = 'DEBUG'
-ES_URI = 'localhost:9200'
-ES_INDEX = 'spider2048_image'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'spider2048 (+http://www.yourdomain.com)'
+#USER_AGENT = 'spider_macwk (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
 DUPEFILTER_DEBUG = True
 
-#DUPEFILTER_CLASS = 'scrapy.dupefilters.BaseDupeFilter'
-DUPEFILTER_CLASS = 'spider2048.esdupefilter.ESDupeFilter'
+# DUPEFILTER_CLASS = 'scrapy.dupefilters.BaseDupeFilter'
+DUPEFILTER_CLASS = 'esdupefilter.ESDupeFilter'
 
 ES_URI = 'localhost:9200'
-ES_INDEX = 'spider2048_image'
+ES_INDEX = 'macwk_soft'
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -57,13 +54,13 @@ ES_INDEX = 'spider2048_image'
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'spider2048.middlewares.Spider2048SpiderMiddleware': 543,
+#    'spider_macwk.middlewares.SpiderMacwkSpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    'spider2048.middlewares.Spider2048DownloaderMiddleware': 543,
+#    'spider_macwk.middlewares.SpiderMacwkDownloaderMiddleware': 543,
 #}
 
 # Enable or disable extensions
@@ -75,8 +72,7 @@ ES_INDEX = 'spider2048_image'
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'spider2048.pipelines.Spider2048FilesPipeline': 1,
-    'espipeline.ElasticsearchPipeline': 2,
+   'espipeline.ElasticsearchPipeline': 1,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
