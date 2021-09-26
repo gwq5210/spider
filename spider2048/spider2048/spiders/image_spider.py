@@ -117,13 +117,13 @@ class ImageSpider(scrapy.Spider):
         return str(thread_id)
 
     def normalize_path(self, path):
-        return self.invalid_char_regex.sub("", path)
+        return self.invalid_char_regex.sub("", path).rstrip(' .')
 
     def parse_image_thread(self, response, top_title, thread_title, id, img_page_url):
         img_list = response.xpath("//*[@class='tpc_content']//img")
         img_count = len(img_list)
         if img_count == 0:
-            self.logger.waring("parse %s (%s) img empty" %
+            self.logger.warning("parse %s (%s) img empty" %
                                (top_title, img_page_url))
         thread_id = id
         thread_time_result = response.xpath('//*[@id="td_tpc"]/div[2]/span[2]')
@@ -150,10 +150,10 @@ class ImageSpider(scrapy.Spider):
         item["file_urls"] = img_url_list
         item["thread_time"] = thread_time
         if thread_time == 0:
-            self.logger.waring("parse %s (%s) thread time failed" %
+            self.logger.warning("parse %s (%s) thread time failed" %
                                (top_title, img_page_url))
         if not thread_title:
-            self.logger.waring("parse %s (%s) title failed" %
+            self.logger.warning("parse %s (%s) title failed" %
                                (top_title, img_page_url))
         if len(invalid_url_list) > 0:
             self.logger.error("parse %s/%s(%s) invalid url count %d, %s" % (

@@ -6,21 +6,18 @@ from scrapy.mail import MailSender
 logger = logging.getLogger(__name__)
 
 
-class SendEmail(object):
+class SendMail(object):
 
-    def __init__(self, sender, mail_enabled, crawler):
-        self.sender = sender
+    def __init__(self, mail_sender, mail_enabled, mail_to, crawler):
+        self.mail_sender = mail_sender
         self.mail_enabled = mail_enabled
+        self.mail_to = mail_to
         crawler.signals.connect(self.spider_idle, signal=signals.spider_idle)
-        crawler.signals.connect(
-            self.spider_closed, signal=signals.spider_closed)
+        crawler.signals.connect(self.spider_closed, signal=signals.spider_closed)
 
     @classmethod
     def from_crawler(cls, crawler):
-        if not crawler.settings['MAIL_ENABLED']:
-            raise NotConfigured
-
-        return cls(MailSender.from_settings(crawler.settings), crawler.settings.getbool('MAIL_ENABLED'), crawler)
+        return cls(MailSender.from_settings(crawler.settings), crawler.settings.getbool('MAIL_ENABLED'), crawler.settings.get('MAIL_TO'), crawler)
 
     def spider_idle(self, spider):
         logger.info('idle spider %s' % spider.name)
@@ -31,4 +28,4 @@ class SendEmail(object):
         logger.info(body)
         # https://github.com/scrapy/scrapy/issues/3478
         if self.mail_enabled:
-            return self.sender.send(to=self.sender.mailfrom, subject=subject, body=body)
+            return self.mail_sender.send(to=self.mail_to, subject=subject, body=body)
