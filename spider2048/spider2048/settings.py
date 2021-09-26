@@ -83,8 +83,8 @@ MAIL_SSL = True
 
 AUTO_MAIL_STATS = True
 AUTO_STATS_INTERVAL = 600
-ITEM_COUNT_INTERVAL = 100
-IMAGE_COUNT_INTERVAL = 100
+ITEM_COUNT_INTERVAL = 200
+IMAGE_COUNT_INTERVAL = 3000
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
