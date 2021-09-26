@@ -10,6 +10,7 @@ import parse
 from spider2048.items import Spider2048Item
 from urllib.parse import urlparse
 from datetime import datetime
+from scrapy.exceptions import NotConfigured
 
 sys.path.append(os.path.abspath(os.path.dirname(os.getcwd())))
 
@@ -25,7 +26,7 @@ class ImageSpider(scrapy.Spider):
         super(ImageSpider, self).__init__(*args, **kwargs)
         self.start_urls = []
         if base_url:
-            self.start_urls.append(f"{base_url}")
+            self.start_urls.append(base_url)
         self.page_limit_count = int(page_limit_count)
         self.image_limit_count = int(image_limit_count)
         self.spider_category_name = spider_category_name

@@ -11,8 +11,6 @@ BOT_NAME = 'spider2048'
 
 SPIDER_MODULES = ['spider2048.spiders']
 NEWSPIDER_MODULE = 'spider2048.spiders'
-FILES_STORE = 'F:\\Download\\images'
-LOG_FILE = 'F:\\spider\\spider2048\\spider2048.log'
 LOG_LEVEL = 'DEBUG'
 ES_URI = 'localhost:9200'
 ES_INDEX = 'spider2048_image'
@@ -68,15 +66,24 @@ ES_INDEX = 'spider2048_image'
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-#}
+EXTENSIONS = {
+   'send_email.SendEmail': 1,
+}
+
+MAIL_ENABLED = True
+MAIL_HOST = 'smtp.qq.com'
+MAIL_FROM = 'gwq5210@qq.com'
+MAIL_USER = 'gwq5210@qq.com'
+MAIL_PASS = ''
+MAIL_PORT = 465
+MAIL_SSL = True
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'spider2048.pipelines.Spider2048FilesPipeline': 1,
-    'espipeline.ElasticsearchPipeline': 2,
+    'eswriter.ESWriterPipeline': 2,
+    'autostat.AutoStatPipeline': 3,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

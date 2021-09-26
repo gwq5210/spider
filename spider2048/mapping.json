@@ -1,0 +1,108 @@
+{
+    "settings": {
+        "analysis": {
+            "analyzer": {
+                "default": {
+                    "tokenizer": "ik_max_word"
+                }
+            }
+        }
+    },
+    "mappings": {
+        "properties": {
+            "crawl_time": {
+                "type": "date",
+                "format": "epoch_second"
+            },
+            "failed_count": {
+                "type": "long"
+            },
+            "file_urls": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "first_crawl_time": {
+                "type": "date",
+                "format": "epoch_second"
+            },
+            "id": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "results": {
+                "properties": {
+                    "checksum": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "message": {
+                        "type": "text"
+                    },
+                    "path": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "status": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "succeeded": {
+                        "type": "boolean"
+                    },
+                    "url": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword"
+                            }
+                        }
+                    }
+                }
+            },
+            "succeeded_count": {
+                "type": "long"
+            },
+            "thread_id": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "thread_time": {
+                "type": "date",
+                "format": "epoch_second"
+            },
+            "thread_title": {
+                "type": "text"
+            },
+            "top_title": {
+                "type": "text"
+            },
+            "total_count": {
+                "type": "long"
+            }
+        }
+    }
+}

@@ -11,7 +11,6 @@ BOT_NAME = 'spider_macwk'
 
 SPIDER_MODULES = ['spider_macwk.spiders']
 NEWSPIDER_MODULE = 'spider_macwk.spiders'
-LOG_FILE = 'F:\\spider\\spider_macwk\\logs\soft_spider.log'
 LOG_LEVEL = 'DEBUG'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -65,14 +64,23 @@ ES_INDEX = 'macwk_soft'
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-#}
+EXTENSIONS = {
+   'send_email.SendEmail': 1,
+}
+
+MAIL_ENABLED = True
+MAIL_HOST = 'smtp.qq.com'
+MAIL_FROM = 'gwq5210@qq.com'
+MAIL_USER = 'gwq5210@qq.com'
+MAIL_PASS = ''
+MAIL_PORT = 465
+MAIL_SSL = True
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'espipeline.ElasticsearchPipeline': 1,
+   'eswriter.ESWriterPipeline': 1,
+   'autostat.AutoStatPipeline': 2,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

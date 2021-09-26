@@ -38,7 +38,7 @@ class SoftSpider(scrapy.Spider):
     def parse_soft_page(self, response):
         page_count = self.parse_page_count(response)
         self.logger.info(f"page_count: {page_count}, page_limit_count: {self.page_limit_count}")
-        if self.page_limit_count > 0:
+        if self.page_limit_count >= 0:
             page_count = min(page_count, self.page_limit_count)
         page_index = 0
         while page_index < page_count:

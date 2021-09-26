@@ -42,7 +42,7 @@ class ESDupeFilter(BaseDupeFilter):
         return cls(es_uri, es_index, debug)
 
     def is_request_dup(self, request: Request, res) -> bool:
-        return res and res["found"]
+        return res and "found" in res and res["found"]
 
     def request_seen(self, request: Request) -> bool:
         fp = self.request_fingerprint(request)
