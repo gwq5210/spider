@@ -66,12 +66,12 @@ class ESDupeFilter(BaseDupeFilter):
         if self.debug:
             msg = "Filtered duplicate request: %(request)s (unique_id: %(unique_id)s)"
             args = {'request': request, 'unique_id': unique_id}
-            self.logger.debug(msg, args, extra={'spider': spider})
+            self.logger.info(msg, args, extra={'spider': spider})
         elif self.logdupes:
             msg = ("Filtered duplicate request: %(request)s (unique_id: %(unique_id)s)"
                    " - no more duplicates will be shown"
                    " (see DUPEFILTER_DEBUG to show all duplicates)")
-            self.logger.debug(msg, {'request': request, 'unique_id': unique_id}, extra={'spider': spider})
+            self.logger.info(msg, {'request': request, 'unique_id': unique_id}, extra={'spider': spider})
             self.logdupes = False
 
         spider.crawler.stats.inc_value('dupefilter/filtered', spider=spider)

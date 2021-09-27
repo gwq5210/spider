@@ -57,18 +57,19 @@ class ESWriterPipeline:
             spider.logger.error('read es index mapping file(%s) failed' % (self.es_index_mapping_file))
 
     def set_crawl_time(self, res, item):
-        if "first_crawl_time" in item:
-            if res["found"]:
+        if "first_crawl_time" in item.fields:
+            if res["found"] and "first_crawl_time" in res["_source"]:
                 item["first_crawl_time"] = res["_source"]["first_crawl_time"]
             else:
                 item["first_crawl_time"] = 0
-        if "crawl_time" in item:
-            item["crawl_time"] = int(datetime.now().timestamp())
-        if "first_crawl_time" in item and "crawl_time" in item and item["first_crawl_time"] == 0:
-            item["first_crawl_time"] = item["crawl_time"]
+        now_time = int(datetime.now().timestamp())
+        if "crawl_time" in item.fields:
+            item["crawl_time"] = now_time
+        if "first_crawl_time" in item.fields and item["first_crawl_time"] == 0:
+            item["first_crawl_time"] = now_time
 
     def process_item(self, item, spider):
-        if not self.es_client or "id" not in item:
+        if not self.es_client or "id" not in item.keys():
             return item
         res = self.es_client.get(index=self.es_index, id=item["id"], ignore=[HTTPStatus.NOT_FOUND])
         spider.logger.debug(f'es get {res}')

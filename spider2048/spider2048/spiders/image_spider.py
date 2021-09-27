@@ -95,8 +95,10 @@ class ImageSpider(scrapy.Spider):
             thread_title = a_tag.css("::text").get()
             thread_title = self.normalize_path(thread_title)
             thread_id = self.parse_thread_id(img_page_url)
-            self.logger.debug("found img page %s %s %s %s" % (
-                top_title, thread_title, img_page_url, thread_id))
+            self.logger.info("found img page %s %s %s %s" % (top_title, thread_title, img_page_url, thread_id))
+            if thread_id == "-1":
+                self.logger.error("parse thread id failed, %s %s %s %s" % (top_title, thread_title, img_page_url, thread_id))
+                continue
             valid_count += 1
             yield response.follow(img_page_url, self.parse_image_thread, cb_kwargs={"top_title": top_title, "thread_title": thread_title, "id": thread_id, "img_page_url": img_page_url})
         self.logger.info("parse (%s) finished, valid thread count %d" %
@@ -105,15 +107,17 @@ class ImageSpider(scrapy.Spider):
     def parse_thread_id(self, thread_url):
         # tid-4200989-fpage-3.html
         # tid-4200989.html
+        # jt/pc/21/2109/4241813.html
         urlparsed = urlparse(thread_url)
-        parse_result = parse.parse(
-            "tid-{thread_id:d}-fpage-{}.html", urlparsed.query)
+        parse_result = parse.parse("tid-{thread_id:d}-fpage-{}.html", urlparsed.query)
         if not parse_result:
             parse_result = parse.parse(
                 "tid-{thread_id:d}.html", urlparsed.query)
-        thread_id = -1
+        thread_id = "-1"
         if parse_result and parse_result["thread_id"]:
             thread_id = parse_result["thread_id"]
+        else:
+            thread_id = os.path.basename(thread_url).removesuffix(".html")
         return str(thread_id)
 
     def normalize_path(self, path):
