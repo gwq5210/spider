@@ -23,6 +23,8 @@ ROBOTSTXT_OBEY = False
 
 DUPEFILTER_DEBUG = True
 
+MEDIA_ALLOW_REDIRECTS = True
+
 #DUPEFILTER_CLASS = 'scrapy.dupefilters.BaseDupeFilter'
 DUPEFILTER_CLASS = 'spider2048.esdupefilter.ESDupeFilter'
 
