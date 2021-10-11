@@ -12,12 +12,22 @@ BOT_NAME = 'spider_wexyx'
 SPIDER_MODULES = ['spider_wexyx.spiders']
 NEWSPIDER_MODULE = 'spider_wexyx.spiders'
 
+MAIL_ENABLED = True
+MAIL_HOST = 'smtp.qq.com'
+MAIL_FROM = 'gwq5210@qq.com'
+STATSMAILER_RCPTS = 'gwq5210@qq.com'
+MAIL_USER = 'gwq5210@qq.com'
+MAIL_PASS = ''
+MAIL_PORT = 465
+MAIL_SSL = True
+
+MAIL_STATS = True
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'spider_wexyx (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -56,15 +66,17 @@ ROBOTSTXT_OBEY = True
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-#}
+EXTENSIONS = {
+   # 'sendmail.SendMail': 1,
+   'scrapy.extensions.statsmailer.StatsMailer': 2,
+   'autostatsmailer.AutoStatsMailer': 3,
+}
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'spider_wexyx.pipelines.SpiderWexyxPipeline': 300,
-#}
+ITEM_PIPELINES = {
+   'spider_wexyx.pipelines.SpiderWexyxPipeline': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html

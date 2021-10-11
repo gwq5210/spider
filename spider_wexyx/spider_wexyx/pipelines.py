@@ -10,4 +10,5 @@ from itemadapter import ItemAdapter
 
 class SpiderWexyxPipeline:
     def process_item(self, item, spider):
+        spider.logger.info(item["id"])
         return item
