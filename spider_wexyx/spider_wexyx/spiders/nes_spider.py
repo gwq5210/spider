@@ -12,7 +12,7 @@ class NesSpider(scrapy.Spider):
     page_index = 1
     nes_list_path_format = '/api/file/list?page={page_index}&pageSize=20'
 
-    def __init__(self, base_url='https://wexyx.com/', page_limit_count=0, *args, **kwargs):
+    def __init__(self, base_url='https://wexyx.com/', page_limit_count=1, *args, **kwargs):
         super(NesSpider, self).__init__(*args, **kwargs)
         self.base_url = base_url
         if base_url:
@@ -31,11 +31,21 @@ class NesSpider(scrapy.Spider):
         items_info = result["content"]["items"]
         for item_info in items_info:
             yield self.parse_nes_info(item_info)
-        if has_more and (self.page_limit_count == 0 or self.page_index < self.page_limit_count):
+        if has_more and (self.page_limit_count <= 0 or self.page_index < self.page_limit_count):
             self.page_index += 1
             yield response.follow(self.get_nes_list_url(), self.parse)
 
     def parse_nes_info(self, item_info):
         item = SpiderNesItem()
         item["id"] = str(item_info["id"])
+        item["name"] = item_info["name"]
+        item["type"] = item_info["type"]
+        item["location"] = item_info["location"]
+        item["img_url"] = item_info["imgUrl"]
+        item["category_id"] = item_info["categoryId"]
+        item["is_deleted"] = item_info["isDeleted"]
+        item["description"] = item_info["description"]
+        item["create_time"] = item_info["gmtCreate"]
+        item["modified_time"] = item_info["gmtModified"]
+        item["file_urls"] = [item_info["location"], item_info["imgUrl"]]
         return item

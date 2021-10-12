@@ -1,0 +1,73 @@
+{
+    "settings": {
+        "analysis": {
+            "analyzer": {
+                "default": {
+                    "tokenizer": "ik_max_word"
+                }
+            }
+        }
+    },
+    "mappings": {
+        "properties": {
+            "category_id": {
+                "type": "long"
+            },
+            "crawl_time": {
+                "type": "date",
+                "format": "epoch_second"
+            },
+            "create_time": {
+                "type": "date"
+            },
+            "description": {
+                "type": "text"
+            },
+            "first_crawl_time": {
+                "type": "date",
+                "format": "epoch_second"
+            },
+            "id": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "img_url": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "is_deleted": {
+                "type": "long"
+            },
+            "location": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "modified_time": {
+                "type": "date"
+            },
+            "name": {
+                "type": "text"
+            },
+            "type": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            }
+        }
+    }
+}

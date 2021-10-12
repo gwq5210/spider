@@ -29,6 +29,14 @@ MAIL_STATS = True
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
+DUPEFILTER_DEBUG = True
+
+# DUPEFILTER_CLASS = 'scrapy.dupefilters.BaseDupeFilter'
+DUPEFILTER_CLASS = 'spider_wexyx.esdupefilter.ESDupeFilter'
+
+ES_URI = 'localhost:9200'
+ES_INDEX = 'wexyx_nes'
+
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
 
@@ -67,15 +75,16 @@ ROBOTSTXT_OBEY = False
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
 EXTENSIONS = {
-   # 'sendmail.SendMail': 1,
-   'scrapy.extensions.statsmailer.StatsMailer': 2,
-   'autostatsmailer.AutoStatsMailer': 3,
+    # 'sendmail.SendMail': 1,
+    'scrapy.extensions.statsmailer.StatsMailer': 2,
+    'autostatsmailer.AutoStatsMailer': 3,
 }
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'spider_wexyx.pipelines.SpiderWexyxPipeline': 300,
+    'spider_wexyx.pipelines.SpiderWexyxFilesPipeline': 1,
+    'eswriter.ESWriterPipeline': 2,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
