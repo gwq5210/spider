@@ -19,8 +19,7 @@ class ImageSpider(scrapy.Spider):
     name = "image_spider"
     thread_url_format = "{base_url}read.php?tid-{thread_id}.html"
     filter_text_list = ["站点公告", "置顶", "澳门"]
-    invalid_char_regex = re.compile(
-        r"[\/\\\:\*\?\"\<\>\|]")  # '/ \ : * ? " < > |'
+    invalid_char_regex = re.compile(r"[\/\\\:\*\?\"\<\>\|]")  # '/ \ : * ? " < > |'
 
     def __init__(self, base_url=None, page_limit_count=1, image_limit_count=-1, spider_category_name="", spider_top_title="", *args, **kwargs):
         super(ImageSpider, self).__init__(*args, **kwargs)

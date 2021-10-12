@@ -2,6 +2,7 @@ import scrapy
 import json
 import sys
 import os
+import re
 from spider_wexyx.items import SpiderNesItem
 from urllib.parse import urljoin
 
@@ -11,6 +12,7 @@ class NesSpider(scrapy.Spider):
     name = 'nes_spider'
     page_index = 1
     nes_list_path_format = '/api/file/list?page={page_index}&pageSize=20'
+    invalid_char_regex = re.compile(r"[\/\\\:\*\?\"\<\>\|]")  # '/ \ : * ? " < > |'
 
     def __init__(self, base_url='https://wexyx.com/', page_limit_count=1, *args, **kwargs):
         super(NesSpider, self).__init__(*args, **kwargs)
@@ -18,6 +20,9 @@ class NesSpider(scrapy.Spider):
         if base_url:
             self.start_urls = [self.get_nes_list_url()]
         self.page_limit_count = int(page_limit_count)
+
+    def normalize_path(self, path):
+        return self.invalid_char_regex.sub(" ", path).rstrip(' .')
 
     def get_nes_list_url(self):
         return urljoin(self.base_url, self.nes_list_path_format.format(page_index=self.page_index))
@@ -38,7 +43,7 @@ class NesSpider(scrapy.Spider):
     def parse_nes_info(self, item_info):
         item = SpiderNesItem()
         item["id"] = str(item_info["id"])
-        item["name"] = item_info["name"]
+        item["name"] = self.normalize_path(item_info["name"])
         item["type"] = item_info["type"]
         item["location"] = item_info["location"]
         item["img_url"] = item_info["imgUrl"]

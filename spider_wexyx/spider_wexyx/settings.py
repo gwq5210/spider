@@ -37,6 +37,8 @@ DUPEFILTER_CLASS = 'spider_wexyx.esdupefilter.ESDupeFilter'
 ES_URI = 'localhost:9200'
 ES_INDEX = 'wexyx_nes'
 
+MEDIA_ALLOW_REDIRECTS = True
+
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
 

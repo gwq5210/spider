@@ -18,7 +18,10 @@ from datetime import datetime
 
 class SpiderWexyxFilesPipeline(FilesPipeline):
     def file_path(self, request, response=None, info=None, *, item=None):
-        return item["name"] + os.path.sep + os.path.basename(urlparse(request.url).path)
+        if response:
+            return item["name"] + os.path.sep + os.path.basename(urlparse(response.url).path)
+        else:
+            return item["name"] + os.path.sep + os.path.basename(urlparse(request.url).path)
 
     def item_completed(self, results, item, info):
         results_info = []
@@ -45,6 +48,7 @@ class SpiderWexyxFilesPipeline(FilesPipeline):
         if succeeded_count > 0:
             filename = info.spider.settings["FILES_STORE"] + os.path.sep + item["name"] + os.path.sep + "info.txt"
             with open(filename, "w") as f:
+                f.write("id: %s\n" % (item["id"]))
                 f.write("location: %s\n" % (item["location"]))
                 f.write("img_url: %s\n" % (item["img_url"]))
 
