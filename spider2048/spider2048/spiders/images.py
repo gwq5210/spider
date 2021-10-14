@@ -15,14 +15,14 @@ from scrapy.exceptions import NotConfigured
 sys.path.append(os.path.abspath(os.path.dirname(os.getcwd())))
 
 
-class ImageSpider(scrapy.Spider):
+class ImagesSpider(scrapy.Spider):
     name = "image_spider"
     thread_url_format = "{base_url}read.php?tid-{thread_id}.html"
     filter_text_list = ["站点公告", "置顶", "澳门"]
     invalid_char_regex = re.compile(r"[\/\\\:\*\?\"\<\>\|]")  # '/ \ : * ? " < > |'
 
     def __init__(self, base_url=None, page_limit_count=1, image_limit_count=-1, spider_category_name="", spider_top_title="", *args, **kwargs):
-        super(ImageSpider, self).__init__(*args, **kwargs)
+        super(ImagesSpider, self).__init__(*args, **kwargs)
         self.start_urls = []
         if base_url:
             self.start_urls.append(base_url)
@@ -133,7 +133,7 @@ class ImageSpider(scrapy.Spider):
         thread_time = 0
         if len(thread_time_result) > 0:
             thread_time = int(datetime.strptime(
-                thread_time_result[0].attrib["title"], '%Y-%m-%d %H:%M').timestamp())
+                thread_time_result.attrib["title"], '%Y-%m-%d %H:%M').timestamp())
 
         item = Spider2048Item()
         img_url_list = []
