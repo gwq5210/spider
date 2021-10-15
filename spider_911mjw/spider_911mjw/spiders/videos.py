@@ -63,6 +63,14 @@ class VideosSpider(scrapy.Spider):
             yield scrapy.Request(page_url, self.parse_videos_page, cb_kwargs={"top_title": top_title}, dont_filter=True)
             page_index += 1
 
+    def parse_season_id(self, path):
+        season_id = 0
+        res = parse.findall('Season-{:d}', path)
+        if res:
+            for c in res:
+                season_id = c[0]
+        return season_id
+
     def parse_videos_page(self, response, top_title):
         movie_list = response.css('.u-movie')
         movie_count = 0
@@ -72,10 +80,18 @@ class VideosSpider(scrapy.Spider):
             a_info = movie_selector.xpath('a')
             movie_name = a_info.attrib['title']
             movie_path = a_info.attrib['href']
+            tags_list = movie_selector.css('.tags > a::text')
             movie_url = urljoin(self.base_url, movie_path)
             item = VideoItem()
+            item['id'] = os.path.basename(movie_path).removesuffix(".html")
             item['name'] = movie_name
-            self.logger.info(f'movie_path: {movie_path}, movie_name: {movie_name}')
+            item['url'] = movie_url
+            item['path'] = movie_path
+            item['season_id'] = self.parse_season_id(movie_path)
+            item['status'] = movie_selector.css('.zhuangtai > span::text').get()
+            item['tags'] = []
+            for a in tags_list:
+                item['tags'].append(a.get())
             yield response.follow(movie_path, self.parse_video_info, cb_kwargs={"top_title": top_title, "item": item}, dont_filter=True)
             if self.video_limit_count > 0 and movie_count >= self.video_limit_count:
                 break
