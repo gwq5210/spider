@@ -1,4 +1,4 @@
-import pprints
+import pprint
 from scrapy.mail import MailSender
 from scrapy import signals
 from datetime import datetime
