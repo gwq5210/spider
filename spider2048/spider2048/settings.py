@@ -12,8 +12,6 @@ BOT_NAME = 'spider2048'
 SPIDER_MODULES = ['spider2048.spiders']
 NEWSPIDER_MODULE = 'spider2048.spiders'
 LOG_LEVEL = 'INFO'
-ES_URI = 'localhost:9200'
-ES_INDEX = 'spider2048_image'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'spider2048 (+http://www.yourdomain.com)'

@@ -56,6 +56,7 @@ class ESDupeFilter(BaseDupeFilter):
         if request.cb_kwargs and 'id' in request.cb_kwargs:
             return request.cb_kwargs['id']
         else:
+            self.logger.warning('Request cb_kwargs not found "id" argument, do not filter.')
             return ''
 
     def close(self, reason: str) -> None:

@@ -1,0 +1,137 @@
+{
+    "settings": {
+        "analysis": {
+            "analyzer": {
+                "default": {
+                    "tokenizer": "ik_max_word"
+                }
+            }
+        }
+    },
+    "mappings": {
+        "properties": {
+            "alias": {
+                "type": "text"
+            },
+            "country_region": {
+                "type": "text"
+            },
+            "crawl_time": {
+                "type": "date",
+                "format": "epoch_second"
+            },
+            "description": {
+                "type": "text"
+            },
+            "director": {
+                "type": "text"
+            },
+            "duration": {
+                "type": "text"
+            },
+            "first_crawl_time": {
+                "type": "date",
+                "format": "epoch_second"
+            },
+            "id": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "imdb_code": {
+                "type": "text"
+            },
+            "img_url": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "language": {
+                "type": "text"
+            },
+            "name": {
+                "type": "text"
+            },
+            "official_website": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "path": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "premiere": {
+                "type": "text"
+            },
+            "release_date": {
+                "type": "text"
+            },
+            "score": {
+                "type": "float"
+            },
+            "screenwriter": {
+                "type": "text"
+            },
+            "season_id": {
+                "type": "long"
+            },
+            "starring": {
+                "type": "text"
+            },
+            "status": {
+                "type": "text"
+            },
+            "tags": {
+                "type": "text"
+            },
+            "url": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "videe_url_info_list": {
+                "properties": {
+                    "ed2k_url": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "magnet_url": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "name": {
+                        "type": "text"
+                    }
+                }
+            },
+            "video_count": {
+                "type": "long"
+            }
+        }
+    }
+}

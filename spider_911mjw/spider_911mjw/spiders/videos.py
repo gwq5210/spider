@@ -58,7 +58,7 @@ class VideosSpider(scrapy.Spider):
         page_index = 1
         page_count = self.parse_page_count(response)
         self.logger.info(f'found title {top_title}, page_path: {base_page_path}, page_count: {self.page_limit_count}/{page_count}')
-        while page_index <= page_count and page_index <= self.page_limit_count:
+        while page_index <= page_count and (self.page_limit_count < 0 or page_index <= self.page_limit_count):
             page_url = self.get_page_url(base_page_path, page_index)
             yield scrapy.Request(page_url, self.parse_videos_page, cb_kwargs={"top_title": top_title}, dont_filter=True)
             page_index += 1
@@ -80,21 +80,139 @@ class VideosSpider(scrapy.Spider):
             a_info = movie_selector.xpath('a')
             movie_name = a_info.attrib['title']
             movie_path = a_info.attrib['href']
-            tags_list = movie_selector.css('.tags > a::text')
             movie_url = urljoin(self.base_url, movie_path)
             item = VideoItem()
             item['id'] = os.path.basename(movie_path).removesuffix(".html")
             item['name'] = movie_name
             item['url'] = movie_url
             item['path'] = movie_path
-            item['season_id'] = self.parse_season_id(movie_path)
-            item['status'] = movie_selector.css('.zhuangtai > span::text').get()
-            item['tags'] = []
-            for a in tags_list:
-                item['tags'].append(a.get())
-            yield response.follow(movie_path, self.parse_video_info, cb_kwargs={"top_title": top_title, "item": item}, dont_filter=True)
-            if self.video_limit_count > 0 and movie_count >= self.video_limit_count:
+            item['status'] = '完结'
+            if movie_selector.css('.zhuangtai > span::text').get():
+                item['status'] = movie_selector.css('.zhuangtai > span::text').get()
+            yield response.follow(movie_path, self.parse_video_info, cb_kwargs={"top_title": top_title, "item": item, "id": item["id"]})
+            if self.video_limit_count >= 0 and movie_count >= self.video_limit_count:
                 break
 
-    def parse_video_info(self, response, top_title, item):
+    def parse_video_info(self, response, top_title, item, id):
+        video_info_text_list = []
+        ori_video_info_text_list = []
+        info_map = {}
+        sep = '\r\n'
+        for t in response.css('.video_info ::text'):
+            ori_video_info_text_list.append(t.get())
+        ori_video_info_text_list.append('\r\n')
+        i = 0
+        while i < len(ori_video_info_text_list):
+            if ori_video_info_text_list[i].strip(' \t') == sep:
+                i += 1
+                continue
+            key = ori_video_info_text_list[i].strip()
+            key = key.replace('：', ':')
+            if key.endswith(':'):
+                video_info_text_list.append(key.strip(':'))
+                if ori_video_info_text_list[i + 1] == sep:
+                    video_info_text_list.append('')
+                    i += 2
+                else:
+                    value = ori_video_info_text_list[i + 1].strip().strip(':')
+                    index = value.find('IMDb')
+                    if index >= 0:
+                        video_info_text_list.append(value[:index].strip())
+                        imdb_str = value[index:].strip()
+                        index = imdb_str.find(':')
+                        if index >= 0:
+                            video_info_text_list.append(imdb_str[:index+1].strip().strip(':'))
+                            video_info_text_list.append(imdb_str[index+1:].strip().strip(':'))
+                        else:
+                            video_info_text_list.append('IMDb')
+                    else:
+                        video_info_text_list.append(value)
+                    i += 2
+            else:
+                try:
+                    new_key, new_value = key.split(':')
+                    new_key = new_key.strip()
+                    new_value = new_value.strip()
+                    video_info_text_list.append(new_key.strip())
+                    video_info_text_list.append(new_value.strip())
+                except Exception as e:
+                    self.logger.error(f'parse key failed({e}), key({key}), url: {item["url"]}, {i}')
+                    self.logger.error(f'video_info1: {video_info_text_list}')
+                    self.logger.error(f'video_info2: {ori_video_info_text_list}')
+                i += 1
+        if len(video_info_text_list) % 2:
+            self.logger.error(f'{item["name"]}, video_info_text_list: {video_info_text_list}, ori: {ori_video_info_text_list}')
+        video_img_url = response.css('.video_img img').attrib['src']
+        item['description'] = ''
+        if response.css('.jianjie ::text').get():
+            item['description'] = response.css('.jianjie ::text').get().strip()
+        item['season_id'] = self.parse_season_id(item['path'])
+        item["img_url"] = video_img_url
+        item['video_count'] = 0
+        item['score'] = 0.0
+        info_name = {
+            '导演': 'director',
+            '主演': 'starring',
+            '国家/地区': 'country_region',
+            '语言': 'language',
+            '首播': 'premiere',
+            '季数': 'season_id',
+            '集数': 'video_count',
+            '又名': 'alias',
+            'IMDb': 'imdb_code',
+            'IMDb编码': 'imdb_code',
+            '评分': 'score',
+            '单集时长': 'duration',
+            '片长': 'duration',
+            '编剧': 'screenwriter',
+            '上映日期': 'release_date',
+            '类型': 'tags',
+            '官方网站': 'official_website',
+        }
+        i = 0
+        while i < len(video_info_text_list):
+            key = video_info_text_list[i].strip(':')
+            value = video_info_text_list[i + 1]
+            if key in info_name:
+                if info_name[key] in item.keys():
+                    if isinstance(item[info_name[key]], int):
+                        try: 
+                            item[info_name[key]] = int(value)
+                        except:
+                            item[info_name[key]] = 0
+                    elif isinstance(item[info_name[key]], float):
+                        try: 
+                            item[info_name[key]] = float(value)
+                        except:
+                            item[info_name[key]] = 0.0
+                    else:
+                        item[info_name[key]] = value
+                else:
+                    item[info_name[key]] = value
+            else:
+                self.logger.error(f'not found video info key({key}), value({value}), url: {item["url"]}')
+                self.logger.error(f'video_info1: {video_info_text_list}')
+                self.logger.error(f'video_info2: {ori_video_info_text_list}')
+            i += 2
+        item['videe_url_info_list'] = []
+        li_selector = response.css('#download-list > li')
+        for li in li_selector:
+            name = li.attrib['title'].strip()
+            ed2k_url = ''
+            magnet_url = ''
+            for a in li.css('a'):
+                if 'ed2k' in a.attrib['href']:
+                    ed2k_url = a.attrib['href'].strip()
+                elif 'magnet' in a.attrib['href']:
+                    magnet_url = a.attrib['href'].strip()
+            info = {
+                'ed2k_url': ed2k_url,
+                'magnet_url': magnet_url,
+                'name': name,
+            }
+            item['videe_url_info_list'].append(info)
+        if not 'imdb_code' in item.keys() or not item['imdb_code']:
+            self.logger.debug(f'not found imdb code, url: {item["url"]}')
+            self.logger.debug(f'video_info1: {video_info_text_list}')
+            self.logger.debug(f'video_info2: {ori_video_info_text_list}')
         return item

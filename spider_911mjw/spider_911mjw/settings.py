@@ -11,13 +11,23 @@ BOT_NAME = 'spider_911mjw'
 
 SPIDER_MODULES = ['spider_911mjw.spiders']
 NEWSPIDER_MODULE = 'spider_911mjw.spiders'
-
+LOG_LEVEL = 'INFO'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'spider_911mjw (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
+
+DUPEFILTER_DEBUG = True
+
+MEDIA_ALLOW_REDIRECTS = True
+
+#DUPEFILTER_CLASS = 'scrapy.dupefilters.BaseDupeFilter'
+DUPEFILTER_CLASS = 'spider_911mjw.esdupefilter.ESDupeFilter'
+
+ES_URI = 'localhost:9200'
+ES_INDEX = 'mjw_videos'
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -60,11 +70,20 @@ ROBOTSTXT_OBEY = True
 #    'scrapy.extensions.telnet.TelnetConsole': None,
 #}
 
+MAIL_ENABLED = True
+MAIL_HOST = 'smtp.qq.com'
+MAIL_FROM = 'gwq5210@qq.com'
+STATSMAILER_RCPTS = 'gwq5210@qq.com'
+MAIL_USER = 'gwq5210@qq.com'
+MAIL_PASS = ''
+MAIL_PORT = 465
+MAIL_SSL = True
+
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'spider_911mjw.pipelines.Spider911MjwPipeline': 300,
-#}
+ITEM_PIPELINES = {
+    'eswriter.ESWriterPipeline': 1,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
