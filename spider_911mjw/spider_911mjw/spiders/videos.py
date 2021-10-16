@@ -82,7 +82,9 @@ class VideosSpider(scrapy.Spider):
             movie_path = a_info.attrib['href']
             movie_url = urljoin(self.base_url, movie_path)
             item = VideoItem()
-            item['id'] = os.path.basename(movie_path).removesuffix(".html")
+            item['id'] = os.path.basename(movie_path)
+            if item['id'].endswith('.html'):
+                item['id'] = item['id'][:-5]
             item['name'] = movie_name
             item['url'] = movie_url
             item['path'] = movie_path

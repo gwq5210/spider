@@ -9,7 +9,7 @@ from urllib.parse import urljoin
 sys.path.append(os.path.abspath(os.path.dirname(os.getcwd())))
 
 class NesSpider(scrapy.Spider):
-    name = 'nes_spider'
+    name = 'nes'
     page_index = 1
     nes_list_path_format = '/api/file/list?page={page_index}&pageSize=20'
     invalid_char_regex = re.compile(r"[\/\\\:\*\?\"\<\>\|]")  # '/ \ : * ? " < > |'

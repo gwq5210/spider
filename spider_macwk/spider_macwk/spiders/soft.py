@@ -9,7 +9,7 @@ from urllib.parse import urljoin
 sys.path.append(os.path.abspath(os.path.dirname(os.getcwd())))
 
 class SoftSpider(scrapy.Spider):
-    name = 'soft_spider'
+    name = 'soft'
     soft_name = "软件"
     path_format = '/soft/all/p{page_index}'
     soft_version_url_format = 'https://api.macwk.com/api/items/soft_version?filter[softid][eq]={softid}'

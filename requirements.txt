@@ -1,0 +1,6 @@
+parse==1.19.0
+Twisted==21.7.0
+Scrapy==2.5.0
+elasticsearch==7.15.0
+itemadapter==0.4.0
+Js2Py==0.71

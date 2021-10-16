@@ -16,7 +16,7 @@ sys.path.append(os.path.abspath(os.path.dirname(os.getcwd())))
 
 
 class ImagesSpider(scrapy.Spider):
-    name = "image_spider"
+    name = "images"
     thread_url_format = "{base_url}read.php?tid-{thread_id}.html"
     filter_text_list = ["站点公告", "置顶", "澳门"]
     invalid_char_regex = re.compile(r"[\/\\\:\*\?\"\<\>\|]")  # '/ \ : * ? " < > |'
@@ -116,7 +116,9 @@ class ImagesSpider(scrapy.Spider):
         if parse_result and parse_result["thread_id"]:
             thread_id = parse_result["thread_id"]
         else:
-            thread_id = os.path.basename(thread_url).removesuffix(".html")
+            thread_id = os.path.basename(thread_url)
+            if thread_id.endswith(".html"):
+                thread_id = thread_id[:-5]
         return str(thread_id)
 
     def normalize_path(self, path):
