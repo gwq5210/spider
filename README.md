@@ -52,17 +52,19 @@
 
 # 关于项目
 
-爬虫的仓库集合
+爬虫的仓库集合, 会将抓取到的数据保存在[Elasticsearch][Elasticsearch]中
 
-* [spider2048](spider2048)——爬取图片，并将数据存储在[Elasticsearch][Elasticsearch]中
+* [spider_911mjw](spider_911mjw)——爬取美剧信息
+* [spider_macwk](spider_macwk)——爬取mac软件信息
+* [spider_wexyx](spider_wexyx)——爬取nes游戏
+* [spider2048](spider2048)——爬取并下载图片
 
 # 上手指南
 
-## 依赖
+## 主要依赖
 
 * [Python3](https://www.python.org/)
 * [Scrapy](https://scrapy.org/)
-* [Parse](https://pypi.org/project/parse/)
 * [Elasticsearch][Elasticsearch]
 
 ## **运行步骤**
@@ -70,15 +72,21 @@
 1. 安装依赖
 
 ```sh
-pip install scrapy parse
+git clone https://github.com/gwq5210/spider.git
+pip3 install -r requirements.txt
 ```
 
 2. 运行爬虫
 
 ```sh
-git clone https://github.com/gwq5210/spider.git
+cd spider/spider_911mjw
+scrapy crawl videos
+cd spider/spider_macwk
+scrapy crawl soft
+cd spider/spider_wexyx
+scrapy crawl nes
 cd spider/spider2048
-scrapy crawl image_spider
+scrapy crawl images
 ```
 
 # 版权说明
