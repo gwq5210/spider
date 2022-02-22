@@ -35,18 +35,23 @@ class ESWriterPipeline:
     def open_spider(self, spider):
         if not self.es_index:
             return
-        self.es_client = Elasticsearch([self.es_uri])
-        self.create_index(spider)
+        try:
+            self.es_client = Elasticsearch([self.es_uri])
+            self.create_index(spider)
+        except Exception as e:
+            self.logger.error(f'create es client failed, except: {e}')
 
     def close_spider(self, spider):
         pass
 
     def create_index(self, spider):
+        if not self.es_client:
+            return
         if self.es_client.indices.exists(index=self.es_index):
             spider.logger.info('es index(%s) already exists' % (self.es_index))
             return
         if not self.es_index_mapping_file or not os.path.exists(self.es_index_mapping_file):
-            spider.logger.error('es index mapping file does not exist' % (self.es_index_mapping_file))
+            spider.logger.error('es index mapping file %s does not exist' % (self.es_index_mapping_file))
             return
         json_str = ''
         with open(self.es_index_mapping_file) as f:
@@ -57,6 +62,8 @@ class ESWriterPipeline:
             spider.logger.error('read es index mapping file(%s) failed' % (self.es_index_mapping_file))
 
     def set_crawl_time(self, res, item):
+        if 'status' in res and res['status'] == HTTPStatus.NOT_FOUND:
+            return
         if "first_crawl_time" in item.fields:
             if res["found"] and "first_crawl_time" in res["_source"]:
                 item["first_crawl_time"] = res["_source"]["first_crawl_time"]

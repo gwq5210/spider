@@ -1,0 +1,54 @@
+{
+    "settings": {
+        "analysis": {
+            "analyzer": {
+                "default": {
+                    "tokenizer": "ik_max_word"
+                }
+            }
+        }
+    },
+    "mappings": {
+        "properties": {
+            "crawl_time": {
+                "type": "date",
+                "format": "epoch_second"
+            },
+            "first_crawl_time": {
+                "type": "date",
+                "format": "epoch_second"
+            },
+            "group_name": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "id": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "timestamp": {
+                "type": "date",
+                "format": "epoch_second"
+            },
+            "title": {
+                "type": "text"
+            },
+            "url": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            }
+        }
+    }
+}
