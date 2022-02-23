@@ -14,3 +14,4 @@ class HouseItem(scrapy.Item):
     timestamp = scrapy.Field()
     first_crawl_time = scrapy.Field()
     crawl_time = scrapy.Field()
+    msg_sended = scrapy.Field()

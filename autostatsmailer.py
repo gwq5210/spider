@@ -12,7 +12,7 @@ class AutoStatsMailer:
         self.item_count = 0
         self.auto_stats_interval = settings.getint('AUTO_STATS_INTERVAL', 3600)
         self.mail_sender = MailSender.from_settings(settings)
-        self.mail_stats = settings.getbool('AUTO_MAIL_STATS', False)
+        self.auto_mail_stats = settings.getbool('AUTO_MAIL_STATS', False)
         self.item_count_interval = settings.getint('ITEM_COUNT_INTERVAL', 1000)
         self.recipients = settings.getlist('STATSMAILER_RCPTS')
         self.last_stats_time = int(datetime.now().timestamp())
@@ -85,15 +85,21 @@ class AutoStatsMailer:
     def get_subject(self, item, spider):
         return 'spider[%s] auto stats info' % (spider.name)
 
+    def send_msg(self, item, spider, now_time=None):
+        mail_body = self.get_mail_body(item, spider)
+        subject = self.get_subject(item, spider)
+        self.spider.logger.info(f'autostatsmailer: subject({subject}), body({mail_body})')
+        if now_time:
+            self.last_stats_time = now_time
+        self.mail_sender.send(to=self.recipients, subject=subject, body=mail_body)
+        self.send_qq_msg(mail_body)
+
     def item_scraped(self, item, spider):
         self.item_count += 1
+        if self.need_send_mail(item, spider):
+            self.send_msg(item, spider)
+
         now_time = int(datetime.now().timestamp())
-        if self.need_send_mail(item, spider) or (self.item_count % self.item_count_interval == 0) or (now_time - self.last_stats_time >= self.auto_stats_interval):
-            mail_body = self.get_mail_body(item, spider)
-            subject = self.get_subject(item, spider)
-            self.spider.logger.info(f'autostatsmailer: subject({subject}), body({mail_body})')
-            self.last_stats_time = now_time
-            if self.mail_stats:
-                self.mail_sender.send(to=self.recipients, subject=subject, body=mail_body)
-                self.send_qq_msg(mail_body)
+        if self.auto_mail_stats and ((self.item_count % self.item_count_interval == 0) or (now_time - self.last_stats_time >= self.auto_stats_interval)):
+            self.send_msg(item, spider, now_time)
         return item

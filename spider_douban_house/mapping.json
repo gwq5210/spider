@@ -34,6 +34,9 @@
                     }
                 }
             },
+            "msg_sended": {
+                "type": "boolean"
+            },
             "timestamp": {
                 "type": "date",
                 "format": "epoch_second"

@@ -19,9 +19,13 @@ USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
+RETRY_ENABLED = True
+
 DUPEFILTER_DEBUG = True
 
-MEDIA_ALLOW_REDIRECTS = True
+REDIRECT_ENABLED = False
+
+MEDIA_ALLOW_REDIRECTS = False
 
 #DUPEFILTER_CLASS = 'scrapy.dupefilters.BaseDupeFilter'
 # DUPEFILTER_CLASS = 'spider_douban_house.esdupefilter.ESDupeFilter'
@@ -43,6 +47,8 @@ ES_INDEX = 'douban_house'
 # Disable cookies (enabled by default)
 COOKIES_ENABLED = False
 
+DOWNLOAD_TIMEOUT = 10
+
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
 
@@ -50,20 +56,25 @@ COOKIES_ENABLED = False
 DEFAULT_REQUEST_HEADERS = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
     'Accept-Language': 'zh,zh-CN;q=0.9,en;q=0.8,zh-TW;q=0.7',
-    'Cookie': 'll="108288"; bid=aUa6ZE9XX7w; push_noty_num=0; push_doumail_num=0; __utmv=30149280.18531; __utmc=30149280; loc-last-index-location-id="108288"; _vwo_uuid_v2=D6BCDF104C3C62FEDBAB9BBD70F613998|3a5066384e70913d5c688334bcda1937; ct=y; __utmz=30149280.1645507573.11.3.utmcsr=sec.douban.com|utmccn=(referral)|utmcmd=referral|utmcct=/; _pk_ref.100001.8cb4=["","",1645512842,"https://sec.douban.com/"]; _pk_ses.100001.8cb4=*; __utma=30149280.1622722708.1640692505.1645510911.1645512847.13; ap_v=0,6.0; __utmt=1; dbcl2="185310482:aisCoYvw9ys"; ck=aeP8; _pk_id.100001.8cb4=cf5b39d5ade74fb9.1640692501.13.1645514801.1645510998.; __utmb=30149280.123.0.1645514801376',
+    # 'Cookie': 'll="108288"; bid=aUa6ZE9XX7w; push_doumail_num=0; __utmv=30149280.18531; __utmc=30149280; _vwo_uuid_v2=D6BCDF104C3C62FEDBAB9BBD70F613998|3a5066384e70913d5c688334bcda1937; ct=y; push_noty_num=0; dbcl2="185310482:hw0RQFjfGhM"; ck=3hQt; _ga=GA1.2.1622722708.1640692505; _gid=GA1.2.847275910.1645597957; __utmz=30149280.1645599036.22.6.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not provided); _pk_ref.100001.8cb4=["","",1645602772,"https://www.google.com.hk/"]; _pk_ses.100001.8cb4=*; __utma=30149280.1622722708.1640692505.1645599036.1645602773.23; __utmt=1; _pk_id.100001.8cb4=cf5b39d5ade74fb9.1640692501.23.1645602827.1645599173.; __utmb=30149280.36.4.1645602826613',
 }
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-#SPIDER_MIDDLEWARES = {
+# SPIDER_MIDDLEWARES = {
 #    'spider_douban_house.middlewares.SpiderDoubanHouseSpiderMiddleware': 543,
-#}
+# }
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'spider_douban_house.middlewares.SpiderDoubanHouseDownloaderMiddleware': 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+    'random_ua.RandomUserAgentMiddleware': 543,
+    'proxy_pool.ProxyPoolMiddleware': 543,
+    'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 600,
+    'spider_douban_house.middlewares.DoubanHouseRetryMiddleware': 543,
+    'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
+}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
@@ -82,8 +93,9 @@ MAIL_PASS = ''
 MAIL_PORT = 465
 MAIL_SSL = True
 
-AUTO_MAIL_STATS = True
+AUTO_MAIL_STATS = False
 AUTO_MAIL_KEYS = ['沙河', '巩华家园', '于新家园']
+AUTO_MAIL_FILTER_KEYS = ['求租', '合租']
 
 MIRAI_HTTP_KEY = ''
 MIRAI_SEND_QQ = 457781132
@@ -115,3 +127,5 @@ ITEM_PIPELINES = {
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+PROXY_FILE = 'proxy.txt'
