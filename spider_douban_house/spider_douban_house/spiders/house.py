@@ -20,11 +20,11 @@ class HouseSpider(scrapy.Spider):
     group_name_index = 0
     page_index = 0
     page_count = 25
-    min_page_sleep_ms = 100
-    max_page_sleep_ms = 300
+    min_page_sleep_ms = 10 * 1000
+    max_page_sleep_ms = 30 * 1000
     min_sleep_ms = 5 * 60 * 1000
     max_sleep_ms = 15 * 60 * 1000
-    crawl_page_count = -1
+    crawl_page_count = 3
     # 北京租房，北京租房（真的没有中介）小组，北京个人租房 （真房源|无中介），北京租房豆瓣，北京无中介租房，北京租房（非中介）
     group_name_list = ['beijingzufang', '625354', 'opking', '26926', 'zhufang', '279962']
     topic_url_prefix = 'https://www.douban.com/group/topic/'

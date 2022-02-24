@@ -56,7 +56,7 @@ DOWNLOAD_TIMEOUT = 10
 DEFAULT_REQUEST_HEADERS = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
     'Accept-Language': 'zh,zh-CN;q=0.9,en;q=0.8,zh-TW;q=0.7',
-    # 'Cookie': 'll="108288"; bid=aUa6ZE9XX7w; push_doumail_num=0; __utmv=30149280.18531; __utmc=30149280; _vwo_uuid_v2=D6BCDF104C3C62FEDBAB9BBD70F613998|3a5066384e70913d5c688334bcda1937; ct=y; push_noty_num=0; dbcl2="185310482:hw0RQFjfGhM"; ck=3hQt; _ga=GA1.2.1622722708.1640692505; _gid=GA1.2.847275910.1645597957; __utmz=30149280.1645599036.22.6.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not provided); _pk_ref.100001.8cb4=["","",1645602772,"https://www.google.com.hk/"]; _pk_ses.100001.8cb4=*; __utma=30149280.1622722708.1640692505.1645599036.1645602773.23; __utmt=1; _pk_id.100001.8cb4=cf5b39d5ade74fb9.1640692501.23.1645602827.1645599173.; __utmb=30149280.36.4.1645602826613',
+    'Cookie': 'll="108288"; bid=aUa6ZE9XX7w; push_doumail_num=0; __utmv=30149280.18531; __utmc=30149280; _vwo_uuid_v2=D6BCDF104C3C62FEDBAB9BBD70F613998|3a5066384e70913d5c688334bcda1937; ct=y; push_noty_num=0; dbcl2="185310482:hw0RQFjfGhM"; ck=3hQt; _ga=GA1.2.1622722708.1640692505; _gid=GA1.2.847275910.1645597957; __utmz=30149280.1645599036.22.6.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not provided); _pk_ref.100001.8cb4=["","",1645677280,"https://www.google.com.hk/"]; _pk_ses.100001.8cb4=*; __utma=30149280.1622722708.1640692505.1645612159.1645677282.25; __utmt=1; _pk_id.100001.8cb4=cf5b39d5ade74fb9.1640692501.26.1645677311.1645615423.; __utmb=30149280.25.1.1645677311268',
 }
 
 # Enable or disable spider middlewares

@@ -5,7 +5,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 def get_proxy():
-    return requests.get("http://127.0.0.1:5010/get/?type=https").json()['proxy']
+    res_json = requests.get("http://127.0.0.1:5010/get/?type=https").json()
+    if 'proxy' in res_json and res_json['proxy']:
+        return res_json['proxy']
+    return ''
 
 
 def delete_proxy(proxy):
@@ -40,9 +43,11 @@ class ProxyPoolMiddleware(object):
             return get_proxy()
 
     def set_proxy(self, request, spider):
-        self.proxy = 'http://' + self.get_proxy(spider)
-        request.meta["proxy"] = self.proxy
-        spider.logger.info(f'request url {request.url}, proxy:{self.proxy}')
+        self.proxy = self.get_proxy(spider)
+        if self.proxy:
+            self.proxy = 'http://' + self.proxy
+            request.meta["proxy"] = self.proxy
+            spider.logger.info(f'request url {request.url}, proxy:{self.proxy}')
 
     def process_request(self, request, spider):
         self.set_proxy(request, spider)
