@@ -116,8 +116,8 @@ def get_retry_request(
         new_request.meta['retry_times'] = retry_times
         if 'proxy' in new_request.meta:
             del new_request.meta['proxy']
-        if new_proxy:
-            new_request.meta['proxy'] = new_proxy
+        # if new_proxy:
+            # new_request.meta['proxy'] = new_proxy
         new_request.dont_filter = True
         if priority_adjust is None:
             priority_adjust = settings.getint('RETRY_PRIORITY_ADJUST')

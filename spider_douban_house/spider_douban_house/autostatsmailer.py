@@ -50,27 +50,31 @@ class AutoStatsMailer(BaseAutoStatsMailer):
             spider.logger.error('read es index mapping file(%s) failed' % (self.es_index_mapping_file))
 
     def set_msg_sended(self, res, item):
-        if 'msg_sended' in res["_source"] and res["_source"]['msg_sended'] == True:
+        if 'found' in res and res['found'] == True and 'msg_sended' in res["_source"] and res["_source"]['msg_sended'] == True:
             return False
         item['msg_sended'] = True
         return True
 
     def need_send_mail(self, item, spider):
         if not self.es_client or "id" not in item.keys():
-            return item
+            return True
         res = self.es_client.get(index=self.es_index, id=item["id"], ignore=[HTTPStatus.NOT_FOUND])
+        need_send_msg = True
         if not self.set_msg_sended(res, item):
-            self.spider.logger.info(f'already_send_msg: body({item["title"]}), url({item["url"]})')
-            return False
+            need_send_msg = False
         res = self.es_client.index(index=self.es_index, id=item["id"], body=ItemAdapter(item).asdict())
         for key in self.auto_mail_filter_keys:
             if key in item['title']:
-                self.spider.logger.info(f'need_filter: key({key}), body({item["title"]}), url({item["url"]})')
+                self.spider.logger.debug(f'need_filter: key({key}), body({item["title"]}), url({item["url"]})')
                 return False
         for key in self.auto_mail_keys:
             if key in item['title']:
-                self.spider.logger.info(f'need_send_mail: key({key}), body({item["title"]}), url({item["url"]})')
-                return True
+                if need_send_msg:
+                    self.spider.logger.info(f'need_send_mail: key({key}), body({item["title"]}), url({item["url"]})')
+                    return True
+                else:
+                    self.spider.logger.info(f'already_send_msg: body({item["title"]}), url({item["url"]})')
+                    return False
         return False
 
     def get_mail_body(self, item, spider):

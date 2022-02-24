@@ -22,8 +22,8 @@ class HouseSpider(scrapy.Spider):
     page_count = 25
     min_page_sleep_ms = 10 * 1000
     max_page_sleep_ms = 30 * 1000
-    min_sleep_ms = 5 * 60 * 1000
-    max_sleep_ms = 15 * 60 * 1000
+    min_sleep_ms = 3 * 60 * 1000
+    max_sleep_ms = 5 * 60 * 1000
     crawl_page_count = 3
     # 北京租房，北京租房（真的没有中介）小组，北京个人租房 （真房源|无中介），北京租房豆瓣，北京无中介租房，北京租房（非中介）
     group_name_list = ['beijingzufang', '625354', 'opking', '26926', 'zhufang', '279962']
@@ -66,7 +66,7 @@ class HouseSpider(scrapy.Spider):
 
     def parse(self, response):
         self.logger.info(
-            f'request page_url: {self.get_page_url()}, page_limit_count: {self.page_index + 1}/{self.page_limit_count}, day_limit_count: {self.day_limit_count}')
+            f'response page_url: {self.get_page_url()}, page_limit_count: {self.page_index + 1}/{self.page_limit_count}, day_limit_count: {self.day_limit_count}')
         tr_list = response.xpath('//*[@class="olt"]/tr')[1:]
         oldest_timestamp = 0
         for tr_selector in tr_list:
@@ -97,7 +97,6 @@ class HouseSpider(scrapy.Spider):
             item['url'] = url
             item['group_name'] = self.group_name_list[self.group_name_index]
             item['timestamp'] = timestamp
-            item['msg_sended'] = False
             oldest_timestamp = timestamp
             yield item
         time_delta = datetime.now() - datetime.fromtimestamp(oldest_timestamp)
@@ -108,11 +107,9 @@ class HouseSpider(scrapy.Spider):
                 self.random_sleep()
             else:
                 self.random_page_sleep()
-            yield scrapy.Request(self.get_page_url(), self.parse, dont_filter=True)
         elif self.group_name_index + 1 < len(self.group_name_list):
             self.group_name_index += 1
             self.page_index = 0
-            yield scrapy.Request(self.get_page_url(), self.parse, dont_filter=True)
         elif self.crawl_interval > 0:
             self.logger.info(f'all group done. rerun after {self.crawl_interval}s')
             time.sleep(self.crawl_interval)
@@ -121,4 +118,6 @@ class HouseSpider(scrapy.Spider):
         else:
             run = False
         if run:
+            self.logger.info(
+                f'request page_url: {self.get_page_url()}, page_limit_count: {self.page_index + 1}/{self.page_limit_count}, day_limit_count: {self.day_limit_count}')
             yield scrapy.Request(self.get_page_url(), self.parse, dont_filter=True)

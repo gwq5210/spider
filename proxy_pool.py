@@ -46,7 +46,7 @@ class ProxyPoolMiddleware(object):
         self.proxy = self.get_proxy(spider)
         if self.proxy:
             self.proxy = 'http://' + self.proxy
-            request.meta["proxy"] = self.proxy
+            # request.meta["proxy"] = self.proxy
             spider.logger.info(f'request url {request.url}, proxy:{self.proxy}')
 
     def process_request(self, request, spider):
