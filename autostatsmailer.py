@@ -72,6 +72,8 @@ class AutoStatsMailer:
         self.mirai_bind()
 
     def spider_closed(self, spider):
+        self.spider.logger.info(f'send_qq_msg spider closed')
+        self.send_qq_msg('spider closed')
         self.mirai_release()
 
     def need_send_mail(self, item, spider):
@@ -91,7 +93,7 @@ class AutoStatsMailer:
         self.spider.logger.info(f'autostatsmailer: subject({subject}), body({mail_body})')
         if now_time:
             self.last_stats_time = now_time
-        self.mail_sender.send(to=self.recipients, subject=subject, body=mail_body)
+        # self.mail_sender.send(to=self.recipients, subject=subject, body=mail_body)
         self.send_qq_msg(mail_body)
 
     def item_scraped(self, item, spider):

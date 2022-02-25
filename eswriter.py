@@ -70,10 +70,8 @@ class ESWriterPipeline:
             else:
                 item["first_crawl_time"] = 0
         now_time = int(datetime.now().timestamp())
-        if "crawl_time" in item.fields:
-            item["crawl_time"] = now_time
-        if "first_crawl_time" in item.fields and item["first_crawl_time"] == 0:
-            item["first_crawl_time"] = now_time
+        if "msg_sended" in item.fields and res["found"] and "msg_sended" in res["_source"]:
+            item["msg_sended"] = res["_source"]["msg_sended"]
 
     def process_item(self, item, spider):
         if not self.es_client or "id" not in item.keys():
