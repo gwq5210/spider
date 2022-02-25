@@ -139,6 +139,4 @@ class HouseSpider(scrapy.Spider):
         if run:
             self.logger.info(
                 f'request page_url: {self.get_page_url()}, page_limit_count: {self.page_index + 1}/{self.page_limit_count}, day_limit_count: {self.day_limit_count}')
-            self.mirai_client.send_text_msg(
-                self.mirai_recipient, f'request page_url: {self.get_page_url()}, page_limit_count: {self.page_index + 1}/{self.page_limit_count}, day_limit_count: {self.day_limit_count}')
             yield scrapy.Request(self.get_page_url(), self.parse, dont_filter=True)
