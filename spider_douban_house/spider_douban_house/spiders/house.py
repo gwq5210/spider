@@ -1,4 +1,5 @@
-# 
+sys.path.append(os.path.abspath(os.path.dirname(os.getcwd())))
+
 import scrapy
 import sys
 import os
@@ -12,10 +13,6 @@ from spider_douban_house.items import HouseItem
 from urllib.parse import urlparse, urljoin
 from datetime import datetime, timedelta
 from scrapy.exceptions import NotConfigured
-
-sys.path.append(os.path.abspath(os.path.dirname(os.getcwd())))
-print(os.path.abspath(os.path.dirname(os.getcwd())))
-
 from mirai_client import MiraiClient
 
 class HouseSpider(scrapy.Spider):

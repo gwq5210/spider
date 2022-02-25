@@ -99,8 +99,8 @@ AUTO_MAIL_FILTER_KEYS = ['求租', '合租']
 
 MIRAI_HTTP_URL = 'http://localhost:8080'
 MIRAI_HTTP_KEY = ''
-MIRAI_SEND_QQ = 457781132
-MIRAI_RECV_QQ = 202011284
+MIRAI_SEND_QQ = 2423087292
+MIRAI_RECV_QQ = 457781132
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
