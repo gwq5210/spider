@@ -191,6 +191,7 @@ class HouseSpider(scrapy.Spider):
         page_item_count = 0
         tr_list = response.xpath('//*[@class="olt"]/tr')[1:]
         id_list = []
+        item_list = []
         for tr_selector in tr_list:
             item = self.parse_item(tr_selector)
             if not item:
@@ -199,7 +200,9 @@ class HouseSpider(scrapy.Spider):
                 latest_timestamp = item['timestamp']
             page_item_count += 1
             id_list.append(item['id'])
-            yield item
+            item_list.append(item)
         self.check_page_timestamp(latest_timestamp)
         self.check_page_msg_sended(id_list)
+        for item in item_list:
+            yield item
         yield self.do_next_request()
