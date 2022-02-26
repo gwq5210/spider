@@ -1,5 +1,5 @@
 import pprint
-import os
+import os, sys
 from scrapy.mail import MailSender
 from scrapy import signals
 from datetime import datetime
@@ -9,45 +9,22 @@ from elasticsearch import Elasticsearch
 from http import HTTPStatus
 from datetime import datetime
 
+sys.path.append(os.path.abspath(os.path.dirname(os.getcwd())))
+
+from eswriter import ESClient
+
 class AutoStatsMailer(BaseAutoStatsMailer):
     def __init__(self, settings):
         super().__init__(settings)
-        self.auto_mail_keys = settings.getlist('AUTO_MAIL_KEYS')
-        self.auto_mail_filter_keys = settings.getlist('AUTO_MAIL_FILTER_KEYS')
-        self.es_uri = settings.get('ES_URI', 'localhost:9200')
-        self.es_index = settings.get('ES_INDEX', '')
-        self.es_index_mapping_file = settings.get('ES_INDEX_MAPPING_FILE', 'mapping.json')
-        self.es_client = None
+        self.auto_notify_keys = settings.getlist('AUTO_NOTIFY_KEYS')
+        self.auto_notify_filter_keys = settings.getlist('AUTO_NOTIFY_FILTER_KEYS')
+        self.es_client = ESClient.from_settings(settings)
 
     def spider_opened(self, spider):
         super().spider_opened(spider)
-        if not self.es_index:
-            return
-        try:
-            self.es_client = Elasticsearch([self.es_uri])
-            self.create_index(spider)
-        except Exception as e:
-            self.logger.error(f'create es client failed, except: {e}')
 
     def spider_closed(self, spider):
         super().spider_closed(spider)
-
-    def create_index(self, spider):
-        if not self.es_client:
-            return
-        if self.es_client.indices.exists(index=self.es_index):
-            spider.logger.info('es index(%s) already exists' % (self.es_index))
-            return
-        if not self.es_index_mapping_file or not os.path.exists(self.es_index_mapping_file):
-            spider.logger.error('es index mapping file %s does not exist' % (self.es_index_mapping_file))
-            return
-        json_str = ''
-        with open(self.es_index_mapping_file) as f:
-            json_str = f.read()
-        if json_str:
-            self.es_client.indices.create(index=self.es_index, body=json_str)
-        else:
-            spider.logger.error('read es index mapping file(%s) failed' % (self.es_index_mapping_file))
 
     def set_msg_sended(self, res, item):
         if 'found' in res and res['found'] == True and 'msg_sended' in res["_source"] and res["_source"]['msg_sended'] == True:
@@ -55,25 +32,27 @@ class AutoStatsMailer(BaseAutoStatsMailer):
         item['msg_sended'] = True
         return True
 
-    def need_send_mail(self, item, spider):
+    def need_notify(self, item, spider):
+        self.spider.logger.debug(f'need_notify ({self.auto_notify_keys}), ({self.auto_notify_filter_keys}) ({type(self.auto_notify_keys)}), ({type(self.auto_notify_filter_keys)})')
         if not self.es_client or "id" not in item.keys():
             return True
-        res = self.es_client.get(index=self.es_index, id=item["id"], ignore=[HTTPStatus.NOT_FOUND])
+        res = self.es_client.get(id=item["id"], ignore=[HTTPStatus.NOT_FOUND])
         need_send_msg = True
         if not self.set_msg_sended(res, item):
             need_send_msg = False
-        res = self.es_client.index(index=self.es_index, id=item["id"], body=ItemAdapter(item).asdict())
-        for key in self.auto_mail_filter_keys:
+        res = self.es_client.index(id=item["id"], body=ItemAdapter(item).asdict())
+        for key in self.auto_notify_filter_keys:
             if key in item['title']:
                 self.spider.logger.debug(f'need_filter: key({key}), body({item["title"]}), url({item["url"]})')
                 return False
-        for key in self.auto_mail_keys:
+        for key in self.auto_notify_keys:
             if key in item['title']:
+                msg = f'key({key}), body({item["title"]}), url({item["url"]})'
                 if need_send_msg:
-                    self.spider.logger.info(f'need_send_mail: key({key}), body({item["title"]}), url({item["url"]})')
+                    self.spider.logger.info(f'need_notify: {msg}')
                     return True
                 else:
-                    self.spider.logger.info(f'already_send_msg: body({item["title"]}), url({item["url"]})')
+                    self.spider.logger.info(f'already_send_msg: {msg}')
                     return False
         return False
 

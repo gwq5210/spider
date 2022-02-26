@@ -30,8 +30,8 @@ MEDIA_ALLOW_REDIRECTS = False
 #DUPEFILTER_CLASS = 'scrapy.dupefilters.BaseDupeFilter'
 # DUPEFILTER_CLASS = 'spider_douban_house.esdupefilter.ESDupeFilter'
 
-ES_URI = 'localhost:9200'
-ES_INDEX = 'douban_house'
+ES_URL = 'http://localhost:9200'
+ES_INDEX_NAME = 'douban_house'
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -93,14 +93,18 @@ MAIL_PASS = ''
 MAIL_PORT = 465
 MAIL_SSL = True
 
-AUTO_MAIL_STATS = True
-AUTO_MAIL_KEYS = ['沙河', '巩华家园', '于新家园']
-AUTO_MAIL_FILTER_KEYS = ['求租', '合租']
+AUTO_MAIL_STATS = False
+AUTO_NOTIFY_KEYS = ['沙河', '巩华家园', '于新家园']
+AUTO_NOTIFY_FILTER_KEYS = ['求租', '合租']
 
-MIRAI_HTTP_URL = 'http://localhost:8080'
-MIRAI_HTTP_KEY = ''
-MIRAI_SEND_QQ = 2423087292
-MIRAI_RECV_QQ = 457781132
+MIRAI_API_URL = 'http://localhost:8080'
+MIRAI_API_KEY = ''
+MIRAI_SENDER = 2423087292
+MIRAI_RECIPIENTS = [457781132, 1329646082]
+
+PAGE_LIMIT_COUNT = -1
+DAY_LIMIT_COUNT = 7
+CRAWL_INTERVAL = 1800
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html

@@ -17,49 +17,58 @@ from http import HTTPStatus
 from datetime import datetime
 from scrapy.mail import MailSender
 
+logger = logging.getLogger(__name__)
+
+
+class ESClient(Elasticsearch):
+    def __init__(self, index_name, url = ['http://localhost:9200'], index_mapping_file = None):
+        super().__init__(url)
+        self.url = url
+        self.index_name = index_name
+        self.index_mapping_file = index_mapping_file
+        self.create_index()
+
+    @classmethod
+    def from_settings(cls, settings):
+        es_url = settings.get('ES_URL', 'localhost:9200')
+        index_name = settings.get('ES_INDEX_NAME')
+        es_client = cls(index_name, [es_url])
+        return es_client
+
+    def get(self, id, **kwargs):
+        return super().get(index=self.index_name, id=id, **kwargs)
+
+    def index(self, body, **kwargs):
+        return super().index(index=self.index_name, body=body, **kwargs)
+
+    def create_index(self):
+        if self.indices.exists(index=self.index_name):
+            logger.info('es index(%s) already exists' % (self.index_name))
+            return
+        if not self.index_mapping_file or not os.path.exists(self.index_mapping_file):
+            logger.error('es index mapping file %s does not exist' % (self.index_mapping_file))
+            return
+        json_str = ''
+        with open(self.index_mapping_file) as f:
+            json_str = f.read()
+        if json_str:
+            self.indices.create(index=self.es_index, body=json_str)
+        else:
+            logger.error('read es index mapping file(%s) failed' % (self.es_index_mapping_file))
+
 class ESWriterPipeline:
-    def __init__(self, es_uri, es_index, es_index_mapping_file):
-        self.es_uri = es_uri
-        self.es_index = es_index
-        self.es_index_mapping_file = es_index_mapping_file
-        self.es_client = None
+    def __init__(self, settings):
+        self.es_client = ESClient.from_settings(settings)
 
     @classmethod
     def from_crawler(cls, crawler):
-        return cls(
-            es_uri=crawler.settings.get('ES_URI', 'localhost:9200'),
-            es_index=crawler.settings.get('ES_INDEX', ''),
-            es_index_mapping_file=crawler.settings.get('ES_INDEX_MAPPING_FILE', 'mapping.json')
-        )
+        return cls(crawler.settings)
 
     def open_spider(self, spider):
-        if not self.es_index:
-            return
-        try:
-            self.es_client = Elasticsearch([self.es_uri])
-            self.create_index(spider)
-        except Exception as e:
-            self.logger.error(f'create es client failed, except: {e}')
+        pass
 
     def close_spider(self, spider):
         pass
-
-    def create_index(self, spider):
-        if not self.es_client:
-            return
-        if self.es_client.indices.exists(index=self.es_index):
-            spider.logger.info('es index(%s) already exists' % (self.es_index))
-            return
-        if not self.es_index_mapping_file or not os.path.exists(self.es_index_mapping_file):
-            spider.logger.error('es index mapping file %s does not exist' % (self.es_index_mapping_file))
-            return
-        json_str = ''
-        with open(self.es_index_mapping_file) as f:
-            json_str = f.read()
-        if json_str:
-            self.es_client.indices.create(index=self.es_index, body=json_str)
-        else:
-            spider.logger.error('read es index mapping file(%s) failed' % (self.es_index_mapping_file))
 
     def set_crawl_time(self, res, item):
         if 'status' in res and res['status'] == HTTPStatus.NOT_FOUND:
@@ -76,9 +85,9 @@ class ESWriterPipeline:
     def process_item(self, item, spider):
         if not self.es_client or "id" not in item.keys():
             return item
-        res = self.es_client.get(index=self.es_index, id=item["id"], ignore=[HTTPStatus.NOT_FOUND])
+        res = self.es_client.get(id=item["id"], ignore=[HTTPStatus.NOT_FOUND])
         spider.logger.debug(f'es get {res}')
         self.set_crawl_time(res, item)
-        res = self.es_client.index(index=self.es_index, id=item["id"], body=ItemAdapter(item).asdict())
+        res = self.es_client.index(id=item["id"], body=ItemAdapter(item).asdict())
         spider.logger.debug(f'es index {res}')
         return item

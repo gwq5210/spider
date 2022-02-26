@@ -1,1 +1,1 @@
-scrapy crawl house -s MIRAI_HTTP_KEY= -a mirai_api_key= -a page_limit_count=-1 -a day_limit_count=3 -a crawl_interval=3600 -a mirai_sender=2423087292 -a mirai_recipient=457781132 --logfile=house.log
+scrapy crawl house -s MIRAI_API_KEY= -s PAGE_LIMIT_COUNT=-1 -s DAY_LIMIT_COUNT=7 -s CRAWL_INTERVAL=1800 --logfile=house.log
