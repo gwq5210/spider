@@ -41,28 +41,22 @@ class HouseSpider(scrapy.Spider):
     page_path_format = '/group/{group_name}/discussion?start={start}&type=new'
     filter_text_list = []
 
-    def __init__(self, base_url='https://www.douban.com/', page_limit_count=-1, day_limit_count=7, crawl_interval=1800, settings=None, *args, **kwargs):
+    def __init__(self, settings=None, *args, **kwargs):
         super(HouseSpider, self).__init__(*args, **kwargs)
-        self.base_url = base_url
+        self.base_url = settings.get('BASE_URL', 'https://www.douban.com/')
         self.start_urls = []
-        if base_url:
+        if self.base_url:
             self.start_urls.append(self.get_page_url())
-        self.page_limit_count = int(page_limit_count)
-        self.day_limit_count = int(day_limit_count)
-        self.crawl_interval = int(crawl_interval)
+        self.page_limit_count = settings.getint('PAGE_LIMIT_COUNT', -1)
+        self.day_limit_count = settings.getint('DAY_LIMIT_COUNT', 7)
+        self.crawl_interval = settings.getint('CRAWL_INTERVAL', 600)
         self.mirai_recipients = settings.getlist('MIRAI_RECIPIENTS')
         self.mirai_client = MiraiClient.from_settings(settings)
         self.es_client = ESClient.from_settings(settings)
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
-        spider = cls(
-            base_url=crawler.settings.get('BASE_URL', 'https://www.douban.com/'),
-            page_limit_count=crawler.settings.getint('PAGE_LIMIT_COUNT', -1),
-            day_limit_count=crawler.settings.getint('DAY_LIMIT_COUNT', 7),
-            crawl_interval=crawler.settings.getint('CRAWL_INTERVAL', 1800),
-            settings=crawler.settings,
-            *args, **kwargs)
+        spider = cls(settings=crawler.settings, *args, **kwargs)
         spider._set_crawler(crawler)
         return spider
 
@@ -94,12 +88,14 @@ class HouseSpider(scrapy.Spider):
         sleep_ms = random.randint(self.min_sleep_ms, self.max_sleep_ms)
         return sleep_ms / 1000.0
 
-    def sleep(self, sleep_s):
+    def sleep(self, sleep_s, msg=''):
         self.logger.info(f'sleep {timedelta(seconds=sleep_s)}')
+        if msg:
+            self.mirai_client.send_text_msg(self.mirai_recipients, f'{msg}. run after {timedelta(seconds=sleep_s)}.')
         time.sleep(sleep_s)
-
-    def msg_all_sended(self):
-        pass
+        self.logger.info(f'sleep done')
+        if msg:
+            self.mirai_client.send_text_msg(self.mirai_recipients, f'sleep done. spider {self.name} running')
 
     def parse_item(self, tr_selector):
         title = tr_selector.xpath('td')[0].xpath('a').attrib['title']
@@ -157,6 +153,7 @@ class HouseSpider(scrapy.Spider):
     def do_next_request(self):
         run = True
         sleep_s = 0
+        notify_msg = ''
         if self.crawl_page_count > 0 and self.total_page_count % self.crawl_page_count == 0:
             sleep_s = self.random_sleep_s()
         else:
@@ -167,8 +164,7 @@ class HouseSpider(scrapy.Spider):
             self.group_name_index += 1
             self.reset_group_params()
         elif self.crawl_interval > 0:
-            self.mirai_client.send_text_msg(
-                self.mirai_recipients, f'all group done. run after {timedelta(seconds=self.crawl_interval)}')
+            notify_msg = 'all group done'
             sleep_s = self.crawl_interval
             self.reset_group_params()
             self.reset_spider_params()
@@ -176,7 +172,7 @@ class HouseSpider(scrapy.Spider):
             run = False
         self.logger.info(f'do_next_request run: {run}, group_name_index: {self.group_name_index}({self.group_name_list[self.group_name_index]}), page_index: {self.page_index}')
         if run:
-            self.sleep(sleep_s)
+            self.sleep(sleep_s, notify_msg)
             self.logger.info(
                 f'request page_url: {self.get_page_url()}, page_limit_count: {self.page_index + 1}/{self.page_limit_count}, day_limit_count: {self.day_limit_count}')
             return scrapy.Request(self.get_page_url(), self.parse, dont_filter=True)

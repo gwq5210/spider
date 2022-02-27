@@ -104,7 +104,7 @@ MIRAI_RECIPIENTS = [457781132, 1329646082]
 
 PAGE_LIMIT_COUNT = -1
 DAY_LIMIT_COUNT = 7
-CRAWL_INTERVAL = 1800
+CRAWL_INTERVAL = 600
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
