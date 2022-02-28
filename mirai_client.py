@@ -1,11 +1,15 @@
 import requests
 import logging
+import time
+import http
 from urllib.parse import urljoin
 
 logger = logging.getLogger(__name__)
 
 
 class MiraiClient:
+    OK = 0
+
     def __init__(self, sender, api_key, api_url='http://localhost:8080'):
         self.api_url = api_url
         self.sender = int(sender)
@@ -29,24 +33,44 @@ class MiraiClient:
     def __del__(self):
         self.release()
 
+    def process_res(self, res):
+        if res.status_code != http.HTTPStatus.OK:
+            logger.error(f'request {res.url} failed, status: {res.status_code}')
+            return None
+        try:
+            res_json = res.json()
+            if res_json['code'] != self.OK:
+                logger.error(f'request {res.url} failed, res: {res}')
+                return None
+            else:
+                logger.info(f'request {res.url} success, res: {res}')
+                return res_json
+        except Exception as e:
+            logger.error(f'request {res.url} failed, exception: {e}')
+            return None
+
+
     def bind(self):
-        res_json = requests.post(self.verify_url, json={
+        res = requests.post(self.verify_url, json={
             'verifyKey': self.api_key
-        }).json()
-        logger.info(f'client verify {res_json}')
+        })
+        res_json = self.process_res(res)
+        if not res_json:
+            return False
         self.session = res_json['session']
-        res_json = requests.post(self.bind_url, json={
+        res = requests.post(self.bind_url, json={
             'sessionKey': self.session,
             'qq': self.sender,
-        }).json()
-        logger.info(f'client bind_qq {res_json}')
+        })
+        if not self.process_res(res):
+            return False
 
     def release(self):
-        res_json = requests.post(self.bind_url, json={
+        res = requests.post(self.bind_url, json={
             'sessionKey': self.session,
             'qq': self.sender,
-        }).json()
-        logger.info(f'client release_qq {res_json}')
+        })
+        self.process_res(res)
 
     def send_text_msg(self, recipients, msg):
         if type(recipients) is int or type(recipients) is str:
@@ -56,11 +80,24 @@ class MiraiClient:
             self._send_text_msg(recipient, msg)
 
     def _send_text_msg(self, recipient, msg):
-        res_json = requests.post(self.send_msg_url, json={
+        res = requests.post(self.send_msg_url, json={
             "sessionKey": self.session,
             "target": int(recipient),
             "messageChain": [
                 {"type": "Plain", "text": msg},
             ]
-        }).json()
+        })
+        res_json = self.process_res(res)
         logger.info(f'client_send_text_msg({msg}) to ({recipient}) {res_json}')
+
+
+if __name__ == '__main__':
+    sh = logging.StreamHandler()  # 往屏幕上输出
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(sh)
+    sender = 457781132
+    api_key = ''
+    client = MiraiClient(sender, api_key)
+    while True:
+        client.send_text_msg(sender, 'hello world')
+        time.sleep(10)
