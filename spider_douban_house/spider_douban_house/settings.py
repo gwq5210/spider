@@ -94,7 +94,7 @@ MAIL_PORT = 465
 MAIL_SSL = True
 
 AUTO_MAIL_STATS = False
-AUTO_NOTIFY_KEYS = ['沙河', '巩华家园', '于新家园', '翠湖', '绿城雅居', '于辛庄', '翠明', '辛力屯', '兆丰家园', '顺沙路', '']
+AUTO_NOTIFY_KEYS = ['沙河', '巩华家园', '于新家园', '翠湖', '绿城雅居', '于辛庄', '翠明', '辛力屯', '兆丰家园', '顺沙路']
 AUTO_NOTIFY_FILTER_KEYS = ['求租']
 
 MIRAI_API_URL = 'http://localhost:8080'
