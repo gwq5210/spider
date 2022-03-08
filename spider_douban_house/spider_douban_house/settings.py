@@ -103,7 +103,7 @@ NOTIFY_CONFIGS = [{
 }, {
     'keys': ['回龙观', '龙泽', '龙腾'],
     'filter_keys': ['求租'],
-    'recipients': [2386881494],
+    'recipients': [2386881494, 202011284],
 }]
 
 MIRAI_API_URL = 'http://localhost:8080'

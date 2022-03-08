@@ -51,6 +51,9 @@ class AutoNotify(BaseAutoNotify):
     def is_hit_keys(self, item, notify_config: NotifyConfig):
         for key in notify_config.keys:
             if key in item['title']:
+                self.spider.logger.debug(
+                    f'is_hit_keys: key({key}), body({item["title"]}), url({item["url"]})'
+                )
                 return True
         return False
 
