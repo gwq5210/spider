@@ -95,18 +95,16 @@ MAIL_SSL = True
 
 AUTO_NOTIFY_STATS = False
 
-NOTIFY_CONFIGS = [
-    {
-        'keys': ['沙河', '巩华家园', '于新家园', '翠湖', '绿城雅居', '于辛庄', '翠明', '辛力屯', '兆丰家园', '顺沙路'],
-        'filter_keys': ['求租'],
-        'recipients': [457781132],
-    },
-    {
-        'keys': ['回龙观', '龙泽', '龙腾'],
-        'filter_keys': ['求租'],
-        'recipients': [202011284],
-    }
-]
+NOTIFY_CONFIGS = [{
+    'keys':
+    ['沙河', '巩华家园', '于新家园', '翠湖', '绿城雅居', '于辛庄', '翠明', '辛力屯', '兆丰家园', '顺沙路'],
+    'filter_keys': ['求租'],
+    'recipients': [457781132, 1329646082],
+}, {
+    'keys': ['回龙观', '龙泽', '龙腾'],
+    'filter_keys': ['求租'],
+    'recipients': [2386881494],
+}]
 
 MIRAI_API_URL = 'http://localhost:8080'
 MIRAI_API_KEY = ''
