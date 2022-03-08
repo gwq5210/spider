@@ -1,12 +1,8 @@
 import scrapy
 import sys
 import os
-import re
 import random
 import time
-import json
-import logging
-import parse
 from spider_douban_house.items import HouseItem
 from urllib.parse import urlparse, urljoin
 from datetime import datetime, timedelta
@@ -15,8 +11,10 @@ from http import HTTPStatus
 
 sys.path.append(os.path.abspath(os.path.dirname(os.getcwd())))
 
+from auto_notify import NotifyConfig
 from mirai_client import MiraiClient
 from eswriter import ESClient
+
 
 class HouseSpider(scrapy.Spider):
     name = 'house'
@@ -34,7 +32,9 @@ class HouseSpider(scrapy.Spider):
     msg_sended_page_count = 0
     max_failed_check_page_count = 5
     # 北京租房，北京租房（真的没有中介）小组，北京个人租房 （真房源|无中介），北京租房豆瓣，北京无中介租房，北京租房（非中介）
-    group_name_list = ['beijingzufang', '625354', 'opking', '26926', 'zhufang', '279962']
+    group_name_list = [
+        'beijingzufang', '625354', 'opking', '26926', 'zhufang', '279962'
+    ]
     # group_name_list = ['beijingzufang']
     topic_url_prefix = 'https://www.douban.com/group/topic/'
     topic_url_suffix = '?_dtcc=1'
@@ -50,9 +50,13 @@ class HouseSpider(scrapy.Spider):
         self.page_limit_count = settings.getint('PAGE_LIMIT_COUNT', -1)
         self.day_limit_count = settings.getint('DAY_LIMIT_COUNT', 7)
         self.crawl_interval = settings.getint('CRAWL_INTERVAL', 600)
-        self.mirai_recipients = settings.getlist('MIRAI_RECIPIENTS')
+        self.notify_configs = NotifyConfig.from_configs(
+            settings.get('NOTIFY_CONFIGS'))
+        self.mirai_recipients = NotifyConfig.get_recipients(
+            self.notify_configs)
         self.mirai_client = MiraiClient.from_settings(settings)
         self.es_client = ESClient.from_settings(settings)
+        self.logger.info(f'config mirai_recipients: {self.mirai_recipients}')
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
@@ -77,11 +81,15 @@ class HouseSpider(scrapy.Spider):
         self.msg_sended_page_count = 0
 
     def get_page_url(self):
-        return urljoin(self.base_url, self.page_path_format.format(
-            group_name=self.group_name_list[self.group_name_index], start=self.page_count * self.page_index))
+        return urljoin(
+            self.base_url,
+            self.page_path_format.format(
+                group_name=self.group_name_list[self.group_name_index],
+                start=self.page_count * self.page_index))
 
     def random_page_sleep_s(self):
-        sleep_ms = random.randint(self.min_page_sleep_ms, self.max_page_sleep_ms)
+        sleep_ms = random.randint(self.min_page_sleep_ms,
+                                  self.max_page_sleep_ms)
         return sleep_ms / 1000.0
 
     def random_sleep_s(self):
@@ -91,11 +99,15 @@ class HouseSpider(scrapy.Spider):
     def sleep(self, sleep_s, msg=''):
         self.logger.info(f'sleep {timedelta(seconds=sleep_s)}')
         if msg:
-            self.mirai_client.send_text_msg(self.mirai_recipients, f'{msg}. run after {timedelta(seconds=sleep_s)}.')
+            self.mirai_client.send_text_msg(
+                self.mirai_recipients,
+                f'{msg}. run after {timedelta(seconds=sleep_s)}.')
         time.sleep(sleep_s)
         self.logger.info(f'sleep done')
         if msg:
-            self.mirai_client.send_text_msg(self.mirai_recipients, f'sleep done. spider {self.name} running')
+            self.mirai_client.send_text_msg(
+                self.mirai_recipients,
+                f'sleep done. spider {self.name} running')
 
     def parse_item(self, tr_selector):
         title = tr_selector.xpath('td')[0].xpath('a').attrib['title']
@@ -109,15 +121,18 @@ class HouseSpider(scrapy.Spider):
         if not url.endswith(self.topic_url_suffix):
             url += self.topic_url_suffix
         id = url
-        if url.startswith(self.topic_url_prefix) and url.endswith(self.topic_url_suffix):
-            id = url[len(self.topic_url_prefix):-len(self.topic_url_suffix)].strip('/')
+        if url.startswith(self.topic_url_prefix) and url.endswith(
+                self.topic_url_suffix):
+            id = url[len(self.topic_url_prefix
+                         ):-len(self.topic_url_suffix)].strip('/')
         else:
             self.logger.error(f'invalid url {url}')
             return None
         if self.filter(tr_selector.get()):
             self.logger.error(f'ignore title {title}')
             return None
-        self.logger.info(f'discussion info {title} {url} {id} {timestamp} {time_str}')
+        self.logger.info(
+            f'discussion info {title} {url} {id} {timestamp} {time_str}')
 
         item = HouseItem()
         item['id'] = id
@@ -134,7 +149,8 @@ class HouseSpider(scrapy.Spider):
         else:
             self.failed_check_page_count = 0
         self.logger.info(
-            f'time_delta days: {time_delta.days} latest_timestamp:{latest_timestamp} failed_check_page_count: {self.failed_check_page_count}')
+            f'time_delta days: {time_delta.days} latest_timestamp:{latest_timestamp} failed_check_page_count: {self.failed_check_page_count}'
+        )
 
     def check_page_msg_sended(self, id_list):
         for id in id_list:
@@ -143,12 +159,14 @@ class HouseSpider(scrapy.Spider):
                 return False
         self.msg_sended_page_count += 1
         self.logger.info(
-            f'check_page_msg_sended msg_sended_page_count: {self.msg_sended_page_count}')
+            f'check_page_msg_sended msg_sended_page_count: {self.msg_sended_page_count}'
+        )
         return True
 
     def check_msg_sended(self, id):
         res = self.es_client.get(id=id, ignore=[HTTPStatus.NOT_FOUND])
-        return 'found' in res and res['found'] == True and 'msg_sended' in res["_source"] and res["_source"]['msg_sended'] == True
+        return 'found' in res and res['found'] is True and 'msg_sended' in res[
+            "_source"] and res["_source"]['msg_sended'] is True
 
     def do_next_request(self):
         run = True
@@ -158,31 +176,43 @@ class HouseSpider(scrapy.Spider):
             sleep_s = self.random_sleep_s()
         else:
             sleep_s = self.random_page_sleep_s()
-        if (self.page_limit_count <= 0 or self.page_index + 1 < self.page_limit_count) and self.failed_check_page_count <= self.max_failed_check_page_count and self.msg_sended_page_count <= self.max_failed_check_page_count:
+        if (
+                self.page_limit_count <= 0
+                or self.page_index + 1 < self.page_limit_count
+        ) and self.failed_check_page_count <= self.max_failed_check_page_count and self.msg_sended_page_count <= self.max_failed_check_page_count:
             self.page_index += 1
         elif self.group_name_index + 1 < len(self.group_name_list):
             self.group_name_index += 1
             self.reset_group_params()
         elif self.crawl_interval > 0:
-            notify_msg = 'all group done'
+            # notify_msg = 'all group done'
             sleep_s = self.crawl_interval
             self.reset_group_params()
             self.reset_spider_params()
         else:
             run = False
-        self.logger.info(f'do_next_request run: {run}, group_name_index: {self.group_name_index}({self.group_name_list[self.group_name_index]}), page_index: {self.page_index}')
+        self.logger.info(
+            f'do_next_request run: {run}, group_name_index: {self.group_name_index}({self.group_name_list[self.group_name_index]}), page_index: {self.page_index}'
+        )
         if run:
             self.sleep(sleep_s, notify_msg)
             self.logger.info(
-                f'request page_url: {self.get_page_url()}, page_limit_count: {self.page_index + 1}/{self.page_limit_count}, day_limit_count: {self.day_limit_count}')
-            return scrapy.Request(self.get_page_url(), self.parse, dont_filter=True)
+                f'request page_url: {self.get_page_url()}, page_limit_count: {self.page_index + 1}/{self.page_limit_count}, day_limit_count: {self.day_limit_count}'
+            )
+            return scrapy.Request(self.get_page_url(),
+                                  self.parse,
+                                  dont_filter=True)
 
     def parse(self, response):
         self.total_page_count += 1
         if self.total_page_count % self.notify_page_count == 0:
-            self.mirai_client.send_text_msg(self.mirai_recipients, f'spider {self.name} running. total page count: {self.total_page_count}')
+            self.mirai_client.send_text_msg(
+                self.mirai_recipients,
+                f'spider {self.name} running. total page count: {self.total_page_count}'
+            )
         self.logger.info(
-            f'response page_url: {self.get_page_url()}, page_limit_count: {self.page_index + 1}/{self.page_limit_count}, day_limit_count: {self.day_limit_count}')
+            f'response page_url: {self.get_page_url()}, page_limit_count: {self.page_index + 1}/{self.page_limit_count}, day_limit_count: {self.day_limit_count}'
+        )
         latest_timestamp = 0
         page_item_count = 0
         tr_list = response.xpath('//*[@class="olt"]/tr')[1:]

@@ -81,7 +81,7 @@ DOWNLOADER_MIDDLEWARES = {
 EXTENSIONS = {
     # 'sendmail.SendMail': 1,
     # 'scrapy.extensions.statsmailer.StatsMailer': 2,
-    'spider_douban_house.autostatsmailer.AutoStatsMailer': 3,
+    'spider_douban_house.auto_notify.AutoNotify': 3,
 }
 
 MAIL_ENABLED = False
@@ -93,14 +93,24 @@ MAIL_PASS = ''
 MAIL_PORT = 465
 MAIL_SSL = True
 
-AUTO_MAIL_STATS = False
-AUTO_NOTIFY_KEYS = ['沙河', '巩华家园', '于新家园', '翠湖', '绿城雅居', '于辛庄', '翠明', '辛力屯', '兆丰家园', '顺沙路']
-AUTO_NOTIFY_FILTER_KEYS = ['求租']
+AUTO_NOTIFY_STATS = False
+
+NOTIFY_CONFIGS = [
+    {
+        'keys': ['沙河', '巩华家园', '于新家园', '翠湖', '绿城雅居', '于辛庄', '翠明', '辛力屯', '兆丰家园', '顺沙路'],
+        'filter_keys': ['求租'],
+        'recipients': [457781132],
+    },
+    {
+        'keys': ['回龙观', '龙泽', '龙腾'],
+        'filter_keys': ['求租'],
+        'recipients': [202011284],
+    }
+]
 
 MIRAI_API_URL = 'http://localhost:8080'
 MIRAI_API_KEY = ''
 MIRAI_SENDER = 2423087292
-MIRAI_RECIPIENTS = [457781132, 1329646082]
 
 PAGE_LIMIT_COUNT = -1
 DAY_LIMIT_COUNT = 7
