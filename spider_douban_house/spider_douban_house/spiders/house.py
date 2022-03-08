@@ -22,7 +22,7 @@ class HouseSpider(scrapy.Spider):
     page_index = 0
     page_count = 25
     total_page_count = 0
-    notify_page_count = 100
+    notify_page_count = 1000
     min_page_sleep_ms = 10 * 1000
     max_page_sleep_ms = 30 * 1000
     min_sleep_ms = 3 * 60 * 1000
