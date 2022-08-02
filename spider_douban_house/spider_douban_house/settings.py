@@ -56,7 +56,6 @@ COOKIES_ENABLED = False
 DEFAULT_REQUEST_HEADERS = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
     'Accept-Language': 'zh,zh-CN;q=0.9,en;q=0.8,zh-TW;q=0.7',
-    'Cookie': '',
 }
 
 # Enable or disable spider middlewares
@@ -92,6 +91,7 @@ MAIL_USER = 'gwq5210@qq.com'
 MAIL_PASS = ''
 MAIL_PORT = 465
 MAIL_SSL = True
+DOUBAN_USERNAME = '18682085392'
 
 AUTO_NOTIFY_STATS = False
 

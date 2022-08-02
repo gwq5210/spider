@@ -29,12 +29,16 @@ def douban_client_test():
     douban_client = DoubanClient()
     username = '18682085392'
     pwd = ''
-    info, session = douban_client.login(username, pwd, 'scanqr')
-    print(info)
+    infos_return, session = douban_client.login(username, pwd, 'scanqr')
+    print(infos_return['username'])
     print(session)
-    res = session.get('https://www.douban.com/group/beijingzufang/discussion?start=0&type=new', headers = {
+    print(session.cookies)
+    cookie_string = "; ".join([str(k)+"="+str(v) for k,v in session.cookies.items()])
+    print(cookie_string)
+    res = requests.get('https://www.douban.com/group/beijingzufang/discussion?start=0&type=new', headers = {
         'Host': 'www.douban.com',
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
+        'Cookie': cookie_string
     })
     print(res)
 

@@ -14,6 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(os.getcwd())))
 from auto_notify import NotifyConfig
 from mirai_client import MiraiClient
 from eswriter import ESClient
+from douban_client import DoubanClient
 
 
 class HouseSpider(scrapy.Spider):
@@ -50,13 +51,27 @@ class HouseSpider(scrapy.Spider):
         self.page_limit_count = settings.getint('PAGE_LIMIT_COUNT', -1)
         self.day_limit_count = settings.getint('DAY_LIMIT_COUNT', 7)
         self.crawl_interval = settings.getint('CRAWL_INTERVAL', 600)
+        self.douban_username = settings.get('DOUBAN_USERNAME', '18682085392')
         self.notify_configs = NotifyConfig.from_configs(
             settings.get('NOTIFY_CONFIGS'))
         self.mirai_recipients = NotifyConfig.get_recipients(
             self.notify_configs)
         self.mirai_client = MiraiClient.from_settings(settings)
         self.es_client = ESClient.from_settings(settings)
+        self.douban_client = DoubanClient()
+        self.douban_session = None
         self.logger.info(f'config mirai_recipients: {self.mirai_recipients}')
+
+    def douban_login(self):
+        infos_return, session = self.douban_client.login(self.douban_username, '', 'scanqr')
+        cookie_string = "; ".join([str(k)+"="+str(v) for k,v in session.cookies.items()])
+        self.logger.info(f'username: {infos_return["username"]}, cookie_string: {cookie_string}')
+        self.douban_session = session
+
+    def start_requests(self):
+        self.douban_login()
+        for url in self.start_urls:
+            yield scrapy.Request(url, self.parse, dont_filter=True, cookies=self.douban_session.cookies)
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
@@ -201,7 +216,8 @@ class HouseSpider(scrapy.Spider):
             )
             return scrapy.Request(self.get_page_url(),
                                   self.parse,
-                                  dont_filter=True)
+                                  dont_filter=True,
+                                  cookies=self.douban_session.cookies)
 
     def parse(self, response):
         self.total_page_count += 1
