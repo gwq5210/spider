@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 class ESClient(Elasticsearch):
-    def __init__(self, index_name, url = ['http://localhost:9200'], index_mapping_file = None):
+    def __init__(self, index_name, url = ['http://localhost:9200'], index_mapping_file = 'mapping.json'):
         super().__init__(url)
         self.url = url
         self.index_name = index_name
