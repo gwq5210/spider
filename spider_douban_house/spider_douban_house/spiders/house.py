@@ -71,7 +71,7 @@ class HouseSpider(scrapy.Spider):
     def start_requests(self):
         self.douban_login()
         for url in self.start_urls:
-            yield scrapy.Request(url, self.parse, dont_filter=True, cookies=self.douban_session.cookies)
+            yield scrapy.Request(url, self.parse, dont_filter=True, cookies=self.douban_session.cookies.get_dict())
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
@@ -217,7 +217,7 @@ class HouseSpider(scrapy.Spider):
             return scrapy.Request(self.get_page_url(),
                                   self.parse,
                                   dont_filter=True,
-                                  cookies=self.douban_session.cookies)
+                                  cookies=self.douban_session.cookies.get_dict())
 
     def parse(self, response):
         self.total_page_count += 1

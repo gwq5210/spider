@@ -45,7 +45,8 @@ ES_INDEX_NAME = 'douban_house'
 #CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-COOKIES_ENABLED = False
+COOKIES_ENABLED = True
+COOKIES_DEBUG = False
 
 # DOWNLOAD_TIMEOUT = 10
 
@@ -73,6 +74,7 @@ DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 600,
     'spider_douban_house.middlewares.DoubanHouseRetryMiddleware': 543,
     'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
+    'scrapy.downloadermiddlewares.cookies.CookiesMiddleware': 543,
 }
 
 # Enable or disable extensions

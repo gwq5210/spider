@@ -36,7 +36,6 @@ def douban_client_test():
     cookie_string = "; ".join([str(k)+"="+str(v) for k,v in session.cookies.items()])
     print(cookie_string)
     res = requests.get('https://www.douban.com/group/beijingzufang/discussion?start=0&type=new', headers = {
-        'Host': 'www.douban.com',
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
         'Cookie': cookie_string
     })

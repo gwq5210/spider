@@ -52,7 +52,7 @@ class ESClient(Elasticsearch):
         with open(self.index_mapping_file) as f:
             json_str = f.read()
         if json_str:
-            self.indices.create(index=self.es_index, body=json_str)
+            self.indices.create(index=self.index_name, body=json_str)
         else:
             logger.error('read es index mapping file(%s) failed' % (self.es_index_mapping_file))
 
