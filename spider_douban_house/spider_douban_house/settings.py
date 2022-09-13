@@ -30,7 +30,7 @@ MEDIA_ALLOW_REDIRECTS = False
 #DUPEFILTER_CLASS = 'scrapy.dupefilters.BaseDupeFilter'
 # DUPEFILTER_CLASS = 'spider_douban_house.esdupefilter.ESDupeFilter'
 
-ES_URL = 'http://localhost:9200'
+ES_URL = 'http://gwq5210.com:9200'
 ES_INDEX_NAME = 'douban_house'
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
@@ -104,7 +104,7 @@ NOTIFY_CONFIGS = [{
     'recipients': [457781132, 1329646082],
 }]
 
-MIRAI_API_URL = 'http://localhost:8080'
+MIRAI_API_URL = 'http://gwq5210.com:8080'
 MIRAI_API_KEY = ''
 MIRAI_SENDER = 2423087292
 
