@@ -7,15 +7,10 @@
 # useful for handling different item types with a single interface
 import os
 import logging
-import json
-from urllib.parse import urlparse
-from scrapy.pipelines.files import FilesPipeline
 from itemadapter import ItemAdapter
 from elasticsearch import Elasticsearch
-from scrapy.exceptions import DropItem
 from http import HTTPStatus
 from datetime import datetime
-from scrapy.mail import MailSender
 
 logger = logging.getLogger(__name__)
 
@@ -91,3 +86,10 @@ class ESWriterPipeline:
         res = self.es_client.index(id=item["id"], body=ItemAdapter(item).asdict())
         spider.logger.debug(f'es index {res}')
         return item
+
+if __name__ == '__main__':
+    index_name = "douban_house"
+    url = "https://gwq5210.com/es"
+    es_client = Elasticsearch([url])
+    doc = es_client.get(index=index_name, id="274839322")
+    print(doc)
