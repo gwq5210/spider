@@ -2,6 +2,7 @@ import requests
 import logging
 import time
 import http
+import atexit
 from urllib.parse import urljoin
 
 logger = logging.getLogger(__name__)
@@ -10,16 +11,19 @@ logger = logging.getLogger(__name__)
 class MiraiClient:
     OK = 0
 
-    def __init__(self, sender, api_key, api_url='http://localhost:8080'):
+    def __init__(self, sender, api_key, api_url='http://localhost:8080/'):
         self.api_url = api_url
+        if not api_url.endswith("/"):
+            self.api_url += "/"
         self.sender = int(sender)
         self.api_key = api_key
         self.session = ''
-        self.verify_url = urljoin(self.api_url, '/verify')
-        self.bind_url = urljoin(self.api_url, '/bind')
-        self.release_url = urljoin(self.api_url, '/release')
-        self.send_msg_url = urljoin(self.api_url, '/sendFriendMessage')
+        self.verify_url = urljoin(self.api_url, 'verify')
+        self.bind_url = urljoin(self.api_url, 'bind')
+        self.release_url = urljoin(self.api_url, 'release')
+        self.send_msg_url = urljoin(self.api_url, 'sendFriendMessage')
         self.bind()
+        atexit.register(self.release)
 
     @classmethod
     def from_settings(cls, settings):
@@ -30,9 +34,6 @@ class MiraiClient:
         )
         return client
 
-    def __del__(self):
-        self.release()
-
     def process_res(self, res):
         if res.status_code != http.HTTPStatus.OK:
             logger.error(f'request {res.url} failed, status: {res.status_code}')
@@ -40,10 +41,10 @@ class MiraiClient:
         try:
             res_json = res.json()
             if res_json['code'] != self.OK:
-                logger.error(f'request {res.url} failed, res: {res}')
+                logger.error(f'request {res.url} failed, {res_json}')
                 return None
             else:
-                logger.info(f'request {res.url} success, res: {res}')
+                logger.info(f'request {res.url} success, {res_json}')
                 return res_json
         except Exception as e:
             logger.error(f'request {res.url} failed, exception: {e}')
@@ -66,7 +67,7 @@ class MiraiClient:
             return False
 
     def release(self):
-        res = requests.post(self.bind_url, json={
+        res = requests.post(self.release_url, json={
             'sessionKey': self.session,
             'qq': self.sender,
         })
@@ -95,9 +96,9 @@ if __name__ == '__main__':
     sh = logging.StreamHandler()  # 往屏幕上输出
     logger.setLevel(logging.DEBUG)
     logger.addHandler(sh)
-    sender = 457781132
+    sender = 2423087292
     api_key = ''
-    client = MiraiClient(sender, api_key)
-    while True:
-        client.send_text_msg(sender, 'hello world')
-        time.sleep(10)
+    api_url = "https://gwq5210.com/mirai"
+    recipients = [457781132]
+    client = MiraiClient(sender, api_key, api_url)
+    client.send_text_msg(recipients, 'hello world')
