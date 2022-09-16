@@ -104,7 +104,7 @@ NOTIFY_CONFIGS = [{
     'recipients': [457781132, 1329646082],
 }]
 
-MIRAI_API_URL = 'http://gwq5210.com/mirai'
+MIRAI_API_URL = 'https://gwq5210.com/mirai'
 MIRAI_API_KEY = ''
 MIRAI_SENDER = 2423087292
 
