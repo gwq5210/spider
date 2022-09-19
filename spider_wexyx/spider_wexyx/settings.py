@@ -38,6 +38,8 @@ MIRAI_API_URL = 'https://gwq5210.com/mirai'
 MIRAI_API_KEY = ''
 MIRAI_SENDER = 2423087292
 
+FILES_STORE = 'nes'
+
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
 
