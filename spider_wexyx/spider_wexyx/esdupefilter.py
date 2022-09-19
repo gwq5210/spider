@@ -1,5 +1,5 @@
 from scrapy.http.request import Request
-from spider_utils.esdupefilter import ESDupeFilter as BaseESDupeFilter
+from scrapy_spider_utils.esdupefilter import ESDupeFilter as BaseESDupeFilter
 
 class ESDupeFilter(BaseESDupeFilter):
     """Request ES duplicates filter"""

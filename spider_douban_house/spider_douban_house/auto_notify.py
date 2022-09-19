@@ -1,7 +1,7 @@
-from spider_utils.eswriter import ESClient
+from scrapy_spider_utils.eswriter import ESClient
 from datetime import datetime
-from spider_utils.auto_notify import AutoNotify as BaseAutoNotify
-from spider_utils.auto_notify import NotifyInfo
+from scrapy_spider_utils.auto_notify import AutoNotify as BaseAutoNotify
+from scrapy_spider_utils.auto_notify import NotifyInfo
 from itemadapter import ItemAdapter
 from http import HTTPStatus
 from datetime import datetime

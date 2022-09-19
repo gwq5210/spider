@@ -83,14 +83,14 @@ FILES_STORE = 'images'
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
 EXTENSIONS = {
-    'spider_utils.auto_notify.AutoNotify': 3,
+    'scrapy_spider_utils.auto_notify.AutoNotify': 3,
 }
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'spider2048.pipelines.Spider2048FilesPipeline': 1,
-    'spider_utils.eswriter.ESWriterPipeline': 2,
+    'scrapy_spider_utils.eswriter.ESWriterPipeline': 2,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
