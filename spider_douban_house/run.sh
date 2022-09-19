@@ -1,1 +1,5 @@
-scrapy crawl house -s MIRAI_API_KEY= -s PAGE_LIMIT_COUNT=-1 -s DAY_LIMIT_COUNT=7 -s CRAWL_INTERVAL=600 --logfile=house.log
+echo "" > house.log
+mirai_api_key=
+es_user=
+es_passwd=
+scrapy crawl house -s MIRAI_API_KEY=$mirai_api_key -s ES_URL=https://$es_user:$es_passwd@gwq5210.com/es --logfile=house.log

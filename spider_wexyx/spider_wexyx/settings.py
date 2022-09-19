@@ -12,17 +12,6 @@ BOT_NAME = 'spider_wexyx'
 SPIDER_MODULES = ['spider_wexyx.spiders']
 NEWSPIDER_MODULE = 'spider_wexyx.spiders'
 
-MAIL_ENABLED = True
-MAIL_HOST = 'smtp.qq.com'
-MAIL_FROM = 'gwq5210@qq.com'
-STATSMAILER_RCPTS = 'gwq5210@qq.com'
-MAIL_USER = 'gwq5210@qq.com'
-MAIL_PASS = ''
-MAIL_PORT = 465
-MAIL_SSL = True
-
-MAIL_STATS = True
-
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'spider_wexyx (+http://www.yourdomain.com)'
 
@@ -34,10 +23,19 @@ DUPEFILTER_DEBUG = True
 # DUPEFILTER_CLASS = 'scrapy.dupefilters.BaseDupeFilter'
 DUPEFILTER_CLASS = 'spider_wexyx.esdupefilter.ESDupeFilter'
 
-ES_URI = 'localhost:9200'
-ES_INDEX = 'wexyx_nes'
+ES_URL = 'https://gwq5210.com/es'
+ES_INDEX_NAME = 'wexyx_nes'
 
 MEDIA_ALLOW_REDIRECTS = True
+
+AUTO_NOTIFY_STATS = True
+AUTO_NOTIFY_RECIPIENTS = [457781132]
+AUTO_NOTIFY_INTERVAL = 3600
+AUTO_NOTIFY_ITEM_COUNT_INTERVAL = 100
+
+MIRAI_API_URL = 'https://gwq5210.com/mirai'
+MIRAI_API_KEY = ''
+MIRAI_SENDER = 2423087292
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -77,9 +75,7 @@ MEDIA_ALLOW_REDIRECTS = True
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
 EXTENSIONS = {
-    # 'sendmail.SendMail': 1,
-    'scrapy.extensions.statsmailer.StatsMailer': 2,
-    'autostatsmailer.AutoStatsMailer': 3,
+    'auto_notify.AutoNotify': 3,
 }
 
 # Configure item pipelines

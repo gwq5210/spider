@@ -14,12 +14,19 @@ class NesSpider(scrapy.Spider):
     nes_list_path_format = '/api/file/list?page={page_index}&pageSize=20'
     invalid_char_regex = re.compile(r"[\/\\\:\*\?\"\<\>\|]")  # '/ \ : * ? " < > |'
 
-    def __init__(self, base_url='https://wexyx.com/', page_limit_count=1, *args, **kwargs):
+    def __init__(self, settings=None, *args, **kwargs):
         super(NesSpider, self).__init__(*args, **kwargs)
-        self.base_url = base_url
-        if base_url:
+        self.base_url = settings.get('BASE_URL', 'https://wexyx.com/')
+        self.start_urls = []
+        if self.base_url:
             self.start_urls = [self.get_nes_list_url()]
-        self.page_limit_count = int(page_limit_count)
+        self.page_limit_count = settings.getint('PAGE_LIMIT_COUNT', -1)
+
+    @classmethod
+    def from_crawler(cls, crawler, *args, **kwargs):
+        spider = cls(settings=crawler.settings, *args, **kwargs)
+        spider._set_crawler(crawler)
+        return spider
 
     def normalize_path(self, path):
         return self.invalid_char_regex.sub(" ", path).rstrip(' .')

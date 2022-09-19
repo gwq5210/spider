@@ -6,13 +6,38 @@ from scrapy.mail import MailSender
 from scrapy import signals
 from datetime import datetime
 from auto_notify import AutoNotify as BaseAutoNotify
-from auto_notify import NotifyInfo, NotifyConfig
+from auto_notify import NotifyInfo
 from itemadapter import ItemAdapter
 from elasticsearch import Elasticsearch
 from http import HTTPStatus
 from datetime import datetime
 
 sys.path.append(os.path.abspath(os.path.dirname(os.getcwd())))
+
+
+class NotifyConfig:
+    def __init__(self, keys, recipients, filter_keys=[]):
+        self.keys = keys
+        self.recipients = recipients
+        self.filter_keys = filter_keys
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(config['keys'], config['recipients'], config['filter_keys'])
+
+    @classmethod
+    def from_configs(cls, configs):
+        res = []
+        for config in configs:
+            res.append(NotifyConfig.from_config(config))
+        return res
+
+    @classmethod
+    def get_recipients(cls, notify_configs):
+        recipients = []
+        for notify_config in notify_configs:
+            recipients.extend(notify_config.recipients)
+        return recipients
 
 
 class AutoNotify(BaseAutoNotify):
@@ -64,7 +89,7 @@ class AutoNotify(BaseAutoNotify):
             if self.is_filtered(item, notify_config):
                 continue
             if self.is_hit_keys(item, notify_config):
-                notify_info = NotifyInfo(self.get_subject(item), self.get_body(item), notify_config.recipients)
+                notify_info = NotifyInfo(self.get_body(item), notify_config.recipients)
                 tip = 'already_send_msg'
                 if not msg_sended:
                     notify_infos.append(notify_info)
@@ -74,6 +99,3 @@ class AutoNotify(BaseAutoNotify):
 
     def get_body(self, item):
         return f'{item["title"]} {item["url"]} {datetime.fromtimestamp(item["timestamp"]).strftime("%Y-%m-%d %H:%M:%S")}'
-
-    def get_subject(self, item):
-        return 'spider[%s] %s' % (self.spider.name, item['title'])

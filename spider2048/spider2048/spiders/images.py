@@ -21,29 +21,38 @@ class ImagesSpider(scrapy.Spider):
     filter_text_list = ["站点公告", "置顶", "澳门"]
     invalid_char_regex = re.compile(r"[\/\\\:\*\?\"\<\>\|]")  # '/ \ : * ? " < > |'
 
-    def __init__(self, base_url=None, page_limit_count=1, image_limit_count=-1, spider_category_name="", spider_top_title="", *args, **kwargs):
+    def __init__(self, settings=None, *args, **kwargs):
         super(ImagesSpider, self).__init__(*args, **kwargs)
+        self.base_url = settings.get('BASE_URL', '')
+        if not self.base_url.endswith('/'):
+            self.base_url += '/'
         self.start_urls = []
-        if base_url:
-            self.start_urls.append(base_url)
-        self.page_limit_count = int(page_limit_count)
-        self.image_limit_count = int(image_limit_count)
-        self.spider_category_name = spider_category_name
-        self.spider_top_title = spider_top_title
+        if self.base_url:
+            self.start_urls.append(self.base_url)
+        self.page_limit_count = settings.getint('PAGE_LIMIT_COUNT', -1)
+        self.image_limit_count = settings.getint('IMAGE_LIMIT_COUNT', -1)
+        self.scrapy_category_name = settings.get('SCRAPY_CATEGORY_NAME', [])
+        self.scrapy_top_title = settings.get('SCRAPY_TOP_TITLE', [])
+
+    @classmethod
+    def from_crawler(cls, crawler, *args, **kwargs):
+        spider = cls(settings=crawler.settings, *args, **kwargs)
+        spider._set_crawler(crawler)
+        return spider
 
     def parse(self, response):
-        self.logger.info("page_limit_count: {}, image_limit_count: {}, spider_category_name: {}, spider_top_title: {}".format(
-            self.page_limit_count, self.image_limit_count, self.spider_category_name, self.spider_top_title))
+        self.logger.info("page_limit_count: {}, image_limit_count: {}, scrapy_category_name: {}, scrapy_top_title: {}".format(
+            self.page_limit_count, self.image_limit_count, self.scrapy_category_name, self.scrapy_top_title))
         th_list = response.xpath("//*[@id='cate_1']/tr/th[1]")[1:]
         for th in th_list:
             category_name = th.css("a::text").get()
-            if category_name not in self.spider_category_name:
+            if category_name not in self.scrapy_category_name:
                 self.logger.warning("ignore category %s" % (category_name))
                 continue
             a_list = th.css("a")[1:]
             for a in a_list:
                 top_title = a.css("::text").get()
-                if top_title in self.spider_top_title:
+                if top_title in self.scrapy_top_title:
                     yield response.follow(a, self.parse_first_page, cb_kwargs={"top_title": top_title}, dont_filter=True)
 
     def parse_first_page(self, response, top_title):

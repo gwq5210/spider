@@ -26,8 +26,24 @@ MEDIA_ALLOW_REDIRECTS = True
 #DUPEFILTER_CLASS = 'scrapy.dupefilters.BaseDupeFilter'
 DUPEFILTER_CLASS = 'spider2048.esdupefilter.ESDupeFilter'
 
-ES_URI = 'localhost:9200'
-ES_INDEX = 'spider2048_image'
+ES_URL = 'https://gwq5210.com/es'
+ES_INDEX_NAME = 'spider2048_image'
+
+AUTO_NOTIFY_STATS = True
+AUTO_NOTIFY_RECIPIENTS = [457781132]
+AUTO_NOTIFY_INTERVAL = 3600
+AUTO_NOTIFY_ITEM_COUNT_INTERVAL = 20
+
+MIRAI_API_URL = 'https://gwq5210.com/mirai'
+MIRAI_API_KEY = ''
+MIRAI_SENDER = 2423087292
+
+BASE_URL = 'https://2048files.net/2048/'
+PAGE_LIMIT_COUNT = 5
+SCRAPY_CATEGORY_NAME = ["唯美清純"]
+SCRAPY_TOP_TITLE = ["唯美清純"]
+
+FILES_STORE = 'images'
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -67,24 +83,8 @@ ES_INDEX = 'spider2048_image'
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
 EXTENSIONS = {
-   # 'sendmail.SendMail': 1,
-   'scrapy.extensions.statsmailer.StatsMailer': 2,
-   'spider2048.autostatsmailer.AutoStatsMailer': 3,
+    'auto_notify.AutoNotify': 3,
 }
-
-MAIL_ENABLED = True
-MAIL_HOST = 'smtp.qq.com'
-MAIL_FROM = 'gwq5210@qq.com'
-STATSMAILER_RCPTS = 'gwq5210@qq.com'
-MAIL_USER = 'gwq5210@qq.com'
-MAIL_PASS = ''
-MAIL_PORT = 465
-MAIL_SSL = True
-
-AUTO_MAIL_STATS = True
-AUTO_STATS_INTERVAL = 600
-ITEM_COUNT_INTERVAL = 200
-IMAGE_COUNT_INTERVAL = 3000
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html

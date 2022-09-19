@@ -70,7 +70,7 @@ DEFAULT_REQUEST_HEADERS = {
 DOWNLOADER_MIDDLEWARES = {
     # 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
     # 'random_ua.RandomUserAgentMiddleware': 543,
-    'proxy_pool.ProxyPoolMiddleware': 543,
+    # 'proxy_pool.ProxyPoolMiddleware': 543,
     'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 600,
     'spider_douban_house.middlewares.DoubanHouseRetryMiddleware': 543,
     'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
@@ -80,22 +80,13 @@ DOWNLOADER_MIDDLEWARES = {
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
 EXTENSIONS = {
-    # 'sendmail.SendMail': 1,
-    # 'scrapy.extensions.statsmailer.StatsMailer': 2,
     'spider_douban_house.auto_notify.AutoNotify': 3,
 }
 
-MAIL_ENABLED = False
-MAIL_HOST = 'smtp.qq.com'
-MAIL_FROM = 'gwq5210@qq.com'
-STATSMAILER_RCPTS = 'gwq5210@qq.com'
-MAIL_USER = 'gwq5210@qq.com'
-MAIL_PASS = ''
-MAIL_PORT = 465
-MAIL_SSL = True
 DOUBAN_USERNAME = '18682085392'
 
 AUTO_NOTIFY_STATS = False
+AUTO_NOTIFY_RECIPIENTS = [457781132]
 
 NOTIFY_CONFIGS = [{
     'keys':

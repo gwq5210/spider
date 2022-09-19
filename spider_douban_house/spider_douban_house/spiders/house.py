@@ -11,7 +11,6 @@ from http import HTTPStatus
 
 sys.path.append(os.path.abspath(os.path.dirname(os.getcwd())))
 
-from auto_notify import NotifyConfig
 from mirai_client import MiraiClient
 from eswriter import ESClient
 from douban_client import DoubanClient
@@ -52,10 +51,7 @@ class HouseSpider(scrapy.Spider):
         self.day_limit_count = settings.getint('DAY_LIMIT_COUNT', 7)
         self.crawl_interval = settings.getint('CRAWL_INTERVAL', 600)
         self.douban_username = settings.get('DOUBAN_USERNAME', '18682085392')
-        self.notify_configs = NotifyConfig.from_configs(
-            settings.get('NOTIFY_CONFIGS'))
-        self.mirai_recipients = NotifyConfig.get_recipients(
-            self.notify_configs)
+        self.mirai_recipients = settings.get('AUTO_NOTIFY_RECIPIENTS')
         self.mirai_client = MiraiClient.from_settings(settings)
         self.es_client = ESClient.from_settings(settings)
         self.douban_client = DoubanClient()

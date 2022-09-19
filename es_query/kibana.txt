@@ -1,0 +1,17 @@
+GET macwk_soft/_search
+{
+  "query": {
+    "match_all": {
+    }
+  }
+}
+
+GET macwk_soft/_search
+{
+  "query": {
+    "match": {
+      "description": "桌面"
+    }
+  }
+}
+

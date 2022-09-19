@@ -15,12 +15,19 @@ class SoftSpider(scrapy.Spider):
     soft_version_url_format = 'https://api.macwk.com/api/items/soft_version?filter[softid][eq]={softid}'
     key_name_list = ["id", "language", "title", "title_des", "description", "modified_on", "slug", "website"]
 
-    def __init__(self, base_url='https://macwk.com/', page_limit_count=0, *args, **kwargs):
+    def __init__(self, settings=None, *args, **kwargs):
         super(SoftSpider, self).__init__(*args, **kwargs)
-        self.base_url = base_url
-        if base_url:
+        self.base_url = settings.get('BASE_URL', 'https://macwk.com/')
+        self.start_urls = []
+        if self.base_url:
             self.start_urls = [self.base_url]
-        self.page_limit_count = int(page_limit_count)
+        self.page_limit_count = settings.getint('PAGE_LIMIT_COUNT', -1)
+
+    @classmethod
+    def from_crawler(cls, crawler, *args, **kwargs):
+        spider = cls(settings=crawler.settings, *args, **kwargs)
+        spider._set_crawler(crawler)
+        return spider
 
     def parse(self, response):
         link_list = response.xpath('//div[contains(@class, "app-header-nav")]//a[contains(@class, "nav-link")]')
