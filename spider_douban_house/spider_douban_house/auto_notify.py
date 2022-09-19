@@ -1,19 +1,10 @@
-from eswriter import ESClient
-import pprint
-import os
-import sys
-from scrapy.mail import MailSender
-from scrapy import signals
+from spider_utils.eswriter import ESClient
 from datetime import datetime
-from auto_notify import AutoNotify as BaseAutoNotify
-from auto_notify import NotifyInfo
+from spider_utils.auto_notify import AutoNotify as BaseAutoNotify
+from spider_utils.auto_notify import NotifyInfo
 from itemadapter import ItemAdapter
-from elasticsearch import Elasticsearch
 from http import HTTPStatus
 from datetime import datetime
-
-sys.path.append(os.path.abspath(os.path.dirname(os.getcwd())))
-
 
 class NotifyConfig:
     def __init__(self, keys, recipients, filter_keys=[]):

@@ -12,8 +12,6 @@ from urllib.parse import urlparse
 from datetime import datetime
 from scrapy.exceptions import NotConfigured
 
-sys.path.append(os.path.abspath(os.path.dirname(os.getcwd())))
-
 
 class ImagesSpider(scrapy.Spider):
     name = "images"

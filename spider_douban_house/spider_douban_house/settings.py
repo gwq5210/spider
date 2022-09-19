@@ -70,7 +70,6 @@ DEFAULT_REQUEST_HEADERS = {
 DOWNLOADER_MIDDLEWARES = {
     # 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
     # 'random_ua.RandomUserAgentMiddleware': 543,
-    # 'proxy_pool.ProxyPoolMiddleware': 543,
     'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 600,
     'spider_douban_house.middlewares.DoubanHouseRetryMiddleware': 543,
     'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
@@ -106,7 +105,7 @@ CRAWL_INTERVAL = 600
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'eswriter.ESWriterPipeline': 4,
+    'spider_utils.eswriter.ESWriterPipeline': 4,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -129,5 +128,3 @@ ITEM_PIPELINES = {
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-
-PROXY_FILE = 'proxy.txt'

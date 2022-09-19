@@ -41,7 +41,7 @@ logger = logging.getLogger(__name__)
 
 def load_proxy_file(proxy_file):
     proxy_list = []
-    if proxy_file:
+    if proxy_file and os.path.exists():
         with open(proxy_file) as f:
             proxy_list = f.read().split('\n')
     logger.info(f'proxy_list_len {len(proxy_list)} {proxy_list}')
@@ -188,7 +188,7 @@ class DoubanHouseRetryMiddleware:
     def __init__(self, settings):
         if not settings.getbool('RETRY_ENABLED'):
             raise NotConfigured
-        self.proxy_list = load_proxy_file('proxy.txt')
+        self.proxy_list = []
 
     @classmethod
     def from_crawler(cls, crawler):

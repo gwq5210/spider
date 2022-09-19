@@ -1,12 +1,8 @@
 import scrapy
 import js2py
 import json
-import sys
-import os
 from spider_macwk.items import SpiderMacwkItem
 from urllib.parse import urljoin
-
-sys.path.append(os.path.abspath(os.path.dirname(os.getcwd())))
 
 class SoftSpider(scrapy.Spider):
     name = 'soft'

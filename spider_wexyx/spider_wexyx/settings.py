@@ -11,6 +11,7 @@ BOT_NAME = 'spider_wexyx'
 
 SPIDER_MODULES = ['spider_wexyx.spiders']
 NEWSPIDER_MODULE = 'spider_wexyx.spiders'
+LOG_LEVEL = 'INFO'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'spider_wexyx (+http://www.yourdomain.com)'
@@ -18,7 +19,7 @@ NEWSPIDER_MODULE = 'spider_wexyx.spiders'
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
-DUPEFILTER_DEBUG = True
+DUPEFILTER_DEBUG = False
 
 # DUPEFILTER_CLASS = 'scrapy.dupefilters.BaseDupeFilter'
 DUPEFILTER_CLASS = 'spider_wexyx.esdupefilter.ESDupeFilter'
@@ -75,14 +76,14 @@ MIRAI_SENDER = 2423087292
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
 EXTENSIONS = {
-    'auto_notify.AutoNotify': 3,
+    'spider_utils.auto_notify.AutoNotify': 3,
 }
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'spider_wexyx.pipelines.SpiderWexyxFilesPipeline': 1,
-    'eswriter.ESWriterPipeline': 2,
+    'spider_utils.eswriter.ESWriterPipeline': 2,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

@@ -8,12 +8,9 @@ from urllib.parse import urlparse, urljoin
 from datetime import datetime, timedelta
 from scrapy.exceptions import NotConfigured
 from http import HTTPStatus
-
-sys.path.append(os.path.abspath(os.path.dirname(os.getcwd())))
-
-from mirai_client import MiraiClient
-from eswriter import ESClient
-from douban_client import DoubanClient
+from spider_utils.mirai_client import MiraiClient
+from spider_utils.eswriter import ESClient
+from spider_utils.login.douban_client import DoubanClient
 
 
 class HouseSpider(scrapy.Spider):

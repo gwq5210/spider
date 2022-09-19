@@ -6,8 +6,6 @@ import re
 from spider_wexyx.items import SpiderNesItem
 from urllib.parse import urljoin
 
-sys.path.append(os.path.abspath(os.path.dirname(os.getcwd())))
-
 class NesSpider(scrapy.Spider):
     name = 'nes'
     page_index = 1
