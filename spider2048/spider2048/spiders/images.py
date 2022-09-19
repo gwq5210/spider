@@ -16,7 +16,7 @@ from scrapy.exceptions import NotConfigured
 class ImagesSpider(scrapy.Spider):
     name = "images"
     thread_url_format = "{base_url}read.php?tid-{thread_id}.html"
-    filter_text_list = ["站点公告", "置顶", "澳门"]
+    filter_text_list = ["站点公告", "置顶"]
     invalid_char_regex = re.compile(r"[\/\\\:\*\?\"\<\>\|]")  # '/ \ : * ? " < > |'
 
     def __init__(self, settings=None, *args, **kwargs):
@@ -41,17 +41,20 @@ class ImagesSpider(scrapy.Spider):
     def parse(self, response):
         self.logger.info("page_limit_count: {}, image_limit_count: {}, scrapy_category_name: {}, scrapy_top_title: {}".format(
             self.page_limit_count, self.image_limit_count, self.scrapy_category_name, self.scrapy_top_title))
-        th_list = response.xpath("//*[@id='cate_1']/tr/th[1]")[1:]
+        th_list = response.xpath("//*[@id='cate_1']/tr/th")
         for th in th_list:
-            category_name = th.css("a::text").get()
+            category_name = th.xpath("a").css("::text").get()
             if category_name not in self.scrapy_category_name:
                 self.logger.warning("ignore category %s" % (category_name))
                 continue
             a_list = th.css("a")[1:]
             for a in a_list:
                 top_title = a.css("::text").get()
-                if top_title in self.scrapy_top_title:
-                    yield response.follow(a, self.parse_first_page, cb_kwargs={"top_title": top_title}, dont_filter=True)
+                if top_title not in self.scrapy_top_title:
+                    self.logger.warning("ignore %s %s" % (category_name, top_title))
+                    continue
+                self.logger.info("scrapy category %s %s" % (category_name, top_title))
+                yield response.follow(a, self.parse_first_page, cb_kwargs={"top_title": top_title}, dont_filter=True)
 
     def parse_first_page(self, response, top_title):
         page_str = response.xpath("//*[@class='pagesone']/span/text()").get()
@@ -93,7 +96,7 @@ class ImagesSpider(scrapy.Spider):
                 continue
             a_tag = None
             for a in a_list:
-                if "subject" in a.attrib["class"]:
+                if "class" in a.attrib and "subject" in a.attrib["class"]:
                     a_tag = a
             if not a_tag:
                 continue

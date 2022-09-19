@@ -38,12 +38,14 @@ MIRAI_API_URL = 'https://gwq5210.com/mirai'
 MIRAI_API_KEY = ''
 MIRAI_SENDER = 2423087292
 
-BASE_URL = 'https://2048files.net/2048/'
-PAGE_LIMIT_COUNT = 5
-SCRAPY_CATEGORY_NAME = ["唯美清純"]
+BASE_URL = 'http://duoguo.net/2048/'
+PAGE_LIMIT_COUNT = -1
+SCRAPY_CATEGORY_NAME = ["美图秀秀"]
 SCRAPY_TOP_TITLE = ["唯美清純"]
 
 FILES_STORE = 'images'
+
+RETRY_ENABLED = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
