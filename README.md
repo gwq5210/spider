@@ -87,6 +87,9 @@ cd spider/spider_wexyx
 scrapy crawl nes
 cd spider/spider2048
 scrapy crawl images
+
+scrapyd-client schedule -p PROJECT_NAME --arg setting=KEY1=VALUE1 --arg setting=KEY2=VALUE2 SPIDER
+curl http://localhost:6800/schedule.json -d project=PROJECT_NAME -d spider=SPIDER -d setting=KEY1=VALUE1 -d setting=KEY2=VALUE2
 ```
 
 # 版权说明

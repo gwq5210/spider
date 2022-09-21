@@ -1,0 +1,1 @@
+scrapy_spider_utils>=0.0.1

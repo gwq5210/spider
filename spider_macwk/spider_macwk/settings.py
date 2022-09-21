@@ -22,7 +22,7 @@ ROBOTSTXT_OBEY = False
 DUPEFILTER_DEBUG = True
 
 # DUPEFILTER_CLASS = 'scrapy.dupefilters.BaseDupeFilter'
-DUPEFILTER_CLASS = 'esdupefilter.ESDupeFilter'
+DUPEFILTER_CLASS = 'scrapy_spider_utils.esdupefilter.ESDupeFilter'
 
 ES_URL = 'https://gwq5210.com/es'
 ES_INDEX_NAME = 'macwk_soft'
