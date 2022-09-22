@@ -3,16 +3,16 @@ adapters:
   - ws
 debug: true
 enableVerify: true
-verifyKey: PWD
+verifyKey: password
 singleMode: false
 cacheSize: 4096
 adapterSettings:
   ## 详情看 http adapter 使用说明 配置
   http:
-    host: 0.0.0.0
+    host: 127.0.0.1
     port: 8080
     cors: ["*"]
   ws:
-    host: 0.0.0.0
+    host: 127.0.0.1
     port: 8080
     reservedSyncId: -1

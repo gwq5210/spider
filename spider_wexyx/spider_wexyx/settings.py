@@ -24,8 +24,10 @@ DUPEFILTER_DEBUG = False
 # DUPEFILTER_CLASS = 'scrapy.dupefilters.BaseDupeFilter'
 DUPEFILTER_CLASS = 'spider_wexyx.esdupefilter.ESDupeFilter'
 
-ES_URL = 'https://gwq5210.com/es'
+ES_URL = 'https://gwq5210.com/api/es'
 ES_INDEX_NAME = 'wexyx_nes'
+ES_USER = 'gwq5210'
+ES_PASSWORD = ''
 
 MEDIA_ALLOW_REDIRECTS = True
 
@@ -34,7 +36,7 @@ AUTO_NOTIFY_RECIPIENTS = [457781132]
 AUTO_NOTIFY_INTERVAL = 3600
 AUTO_NOTIFY_ITEM_COUNT_INTERVAL = 1000
 
-MIRAI_API_URL = 'https://gwq5210.com/mirai'
+MIRAI_API_URL = 'https://gwq5210.com/api/mirai'
 MIRAI_API_KEY = ''
 MIRAI_SENDER = 2423087292
 

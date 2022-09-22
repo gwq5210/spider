@@ -1,0 +1,13 @@
+# /etc/systemd/system/miraid.service
+[Unit]
+Description=miraid service
+After=syslog.target
+
+[Service]
+ExecStart=/home/ubuntu/mirai_mcl/mcl
+WorkingDirectory=/home/ubuntu/mirai_mcl/
+StandardOutput=file:/home/ubuntu/mirai_mcl/logs/mcl_std.log
+StandardError=file:/home/ubuntu/mirai_mcl/logs/mcl_err.log
+
+[Install]
+WantedBy=multi-user.target
