@@ -37,5 +37,7 @@ jobs:
         run: |
           for dir_name in `find . -name "scrapy.cfg" | sed 's/scrapy.cfg//g'`
           do
-            ls $dir_name
+            cd $dir_name
+            scrapyd-deploy
+            cd -
           done
