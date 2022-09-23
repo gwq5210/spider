@@ -35,8 +35,7 @@ jobs:
         run: find . -name "scrapy.cfg" | xargs -I {} sed -i 's/password = /password = ${{ secrets.SCRAPYD_PASSWORD }}/g' {}
       - name: deploy spiders
         run: |
-          dir_names = `find . -name "scrapy.cfg" | sed 's/scrapy.cfg//g'`
-          for dir_name in $dir_names
+          for dir_name in `find . -name "scrapy.cfg" | sed 's/scrapy.cfg//g'`
           do
             ls $dir_name
           done
