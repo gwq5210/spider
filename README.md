@@ -67,6 +67,43 @@
 * [Scrapy](https://scrapy.org/)
 * [Elasticsearch][Elasticsearch]
 
+## 分析依赖
+
+Python的程序一般需要很多依赖包，如果想要把这些包导出成requirements.txt的形式，常规的方法是直接使用pip freeze命令：
+
+```sh
+pip3 freeze >  requirements.txt
+```
+
+随后，在另一个环境中使用：
+
+```sh
+pip3 install -r requirements.txt
+```
+
+从requirements.txt中恢复依赖环境。
+
+但是这样做有一个问题，那就是pip freeze会把当前环境下的所有pip安装的包都导出到requirements.txt中，但是我们很难保证当前的环境只适用于着一个项目，也就是会引入很多不需要的包，为了解决这个问题，我们需要一个其他的工具，就是pipreqs。
+与pip freeze不同，pipreqs会分析当前项目的依赖，并且只导出当前项目需要的包
+
+首先安装pipreqs
+
+```sh
+pip install pipreqs
+```
+
+将路径定位到项目的root路径，如果当前就在root，只需要：
+
+```sh
+pipreqs ./
+```
+
+之后，requirements.txt将被导出到./路径下，同样的，这个requirements.txt可以使用pip install -r进行安装。
+
+```sh
+pip install -r requirements.txt
+```
+
 ## **运行步骤**
 
 1. 安装依赖
