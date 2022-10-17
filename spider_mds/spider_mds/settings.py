@@ -40,7 +40,7 @@ M3U8_BASE_URL = 'https://dash.madou.club/'
 PAGE_LIMIT_COUNT = -1
 SCRAPY_CATEGORY_NAME = ['all']
 
-FILES_STORE = 'm3u8'
+FILES_STORE = 'mds_m3u8'
 
 DUPEFILTER_DEBUG = True
 DUPEFILTER_CLASS = 'scrapy_spider_utils.esdupefilter.ESDupeFilter'
