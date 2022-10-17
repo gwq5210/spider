@@ -6,3 +6,4 @@ Scrapy==2.5.1
 scrapy_spider_utils>=0.0.9
 setuptools==65.3.0
 Twisted==21.7.0
+m3u8==3.3.0
