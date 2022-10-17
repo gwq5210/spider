@@ -1,0 +1,81 @@
+{
+    "settings": {
+        "analysis": {
+            "analyzer": {
+                "default": {
+                    "tokenizer": "ik_max_word"
+                }
+            }
+        }
+    },
+    "mappings": {
+        "properties": {
+            "category": {
+                "type": "text"
+            },
+            "crawl_time": {
+                "type": "date",
+                "format": "epoch_second"
+            },
+            "duration": {
+                "type": "long"
+            },
+            "file_urls": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "first_crawl_time": {
+                "type": "date",
+                "format": "epoch_second"
+            },
+            "id": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "img_url": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "like_count": {
+                "type": "long"
+            },
+            "m3u8_page_url": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "name": {
+                "type": "text"
+            },
+            "page_url": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "tags": {
+                "type": "text"
+            },
+            "watch_count": {
+                "type": "long"
+            }
+        }
+    }
+}
