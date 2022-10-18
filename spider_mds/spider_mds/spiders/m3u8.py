@@ -15,7 +15,6 @@ class M3u8Spider(scrapy.Spider):
         self.m3u8_base_url = settings.get('M3U8_BASE_URL', '')
         if not self.m3u8_base_url.endswith('/'):
             self.m3u8_base_url += '/'
-        self.page_index = 1
         self.start_urls = []
         self.page_path_format = "/page/{page_index}"
         self.m3u8_path_format = "/videos/{video_id}/index.m3u8"
@@ -31,11 +30,11 @@ class M3u8Spider(scrapy.Spider):
         spider._set_crawler(crawler)
         return spider
 
-    def get_page_url(self, base_url):
-        if self.page_index < 0:
+    def get_page_url(self, base_url, page_index):
+        if page_index < 0:
             return ""
         else:
-            return base_url + self.page_path_format.format(page_index=self.page_index)
+            return base_url + self.page_path_format.format(page_index=page_index)
 
     def hit_category(self, category_name):
         for category in self.scrapy_category_name:
@@ -61,21 +60,20 @@ class M3u8Spider(scrapy.Spider):
                     self.logger.warning(f"ignore category {category_name}")
                     continue
                 self.logger.info(f"found category {category_name}, url {url}")
-                self.page_index = 1
-                yield self.request_category_page(url, category_name)
+                yield self.request_category_page(url, category_name, 1)
 
-    def request_category_page(self, base_url, category_name):
-        page_url = self.get_page_url(base_url)
-        if (not page_url) or (self.page_limit_count > 0 and self.page_index > self.page_limit_count):
+    def request_category_page(self, base_url, category_name, page_index):
+        page_url = self.get_page_url(base_url, page_index)
+        if (not page_url) or (self.page_limit_count > 0 and page_index > self.page_limit_count):
             return
         self.logger.info(f"request {page_url} videos")
-        return scrapy.Request(page_url, self.parse_category_page, cb_kwargs={"category_name": category_name, "base_url": base_url}, dont_filter=True)
+        return scrapy.Request(page_url, self.parse_category_page, cb_kwargs={"category_name": category_name, "base_url": base_url, "page_index": page_index}, dont_filter=True)
 
     def has_next_page(self, response):
         return '下一页' in response.text
 
-    def parse_category_page(self, response, category_name, base_url):
-        self.logger.info(f"category_name {category_name}, response url {response.url}, page index {self.page_index}")
+    def parse_category_page(self, response, category_name, base_url, page_index):
+        self.logger.info(f"category_name {category_name}, response url {response.url}, page index {page_index}")
         article_list = response.xpath("//*[@class='excerpts-wrapper']//article")
         for article_tag in article_list:
             a_tag = article_tag.xpath("h2/a")[0]
@@ -89,10 +87,9 @@ class M3u8Spider(scrapy.Spider):
             self.logger.info(f"{item['name']}, {video_url}, {item['img_url']}")
             yield scrapy.Request(video_url, self.pase_video_page, cb_kwargs={"category_name": category_name, "item": item}, dont_filter=False)
         if self.has_next_page(response):
-            self.page_index += 1
-            yield self.request_category_page(base_url, category_name)
+            yield self.request_category_page(base_url, category_name, page_index + 1)
         else:
-            self.logger.info(f'category_name {category_name} page done, page_index: {self.page_index}')
+            self.logger.info(f'category_name {category_name} page done, page_index: {page_index}')
 
     def parse_watch_count(self, count_text):
         if not count_text:
