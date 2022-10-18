@@ -107,7 +107,7 @@ CRAWL_INTERVAL = 600
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'scrapy_spider_utils.eswriter.ESWriterPipeline': 4,
+    'spider_douban_house.pipelines.HouseESWriterPipeline': 4,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
