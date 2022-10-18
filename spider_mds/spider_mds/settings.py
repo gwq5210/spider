@@ -82,9 +82,9 @@ DUPEFILTER_CLASS = 'scrapy_spider_utils.esdupefilter.ESDupeFilter'
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-#}
+EXTENSIONS = {
+    'scrapy_spider_utils.auto_notify.AutoNotify': 3,
+}
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
